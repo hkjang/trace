@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trace — Remember why you decided. | Decision Intelligence Platform</title>
+  <meta name="description" content="Trace는 결정 당시 알고 있던 정보와 나중에 확인된 결과를 분리해 기록하고, 과거 시점으로 돌아가 판단 품질을 다시 보는 엔터프라이즈 Decision Intelligence 서비스입니다.">
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #080c14;
+      --bg-card: #0e1526;
+      --bg-card-hover: #141f38;
+      --bg-glass: rgba(14, 21, 38, 0.75);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.4);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --accent-blue: #3b82f6;
+      --accent-indigo: #6366f1;
+      --accent-purple: #a855f7;
+      --accent-emerald: #10b981;
+      --accent-amber: #f59e0b;
+      --accent-rose: #f43f5e;
+      
+      --gradient-brand: linear-gradient(135deg, #3b82f6 0%, #6366f1 50%, #a855f7 100%);
+      --shadow-glow: 0 0 50px -10px rgba(99, 102, 241, 0.25);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: -20%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1000px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.08) 40%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    header.site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      background: rgba(8, 12, 20, 0.8);
+      border-bottom: 1px solid var(--border-color);
+      padding: 0 2rem;
+    }
+    .header-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: var(--gradient-brand);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    .brand-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+    .brand-tagline {
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      font-weight: 400;
+      margin-left: 6px;
+      display: none;
+    }
+    @media (min-width: 768px) { .brand-tagline { display: inline-block; } }
+
+    nav.nav-links {
+      display: none;
+      align-items: center;
+      gap: 28px;
+    }
+    @media (min-width: 900px) { nav.nav-links { display: flex; } }
+    nav.nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    nav.nav-links a:hover { color: #fff; }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+    }
+    .btn-primary {
+      background: var(--gradient-brand);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border-color);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    section.hero {
+      padding: 5rem 0 4rem;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #a5b4fc;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+    .hero-badge span.pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      box-shadow: 0 0 8px var(--accent-emerald);
+    }
+    h1.hero-headline {
+      font-size: clamp(2.4rem, 5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+    }
+    h1.hero-headline em {
+      font-style: normal;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    p.hero-subhead {
+      max-width: 760px;
+      margin: 0 auto 2.5rem;
+      font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+      color: var(--text-muted);
+      font-weight: 400;
+      line-height: 1.7;
+    }
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+
+    .video-showcase-wrap {
+      margin-top: 2rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: var(--bg-card);
+      overflow: hidden;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), var(--shadow-glow);
+    }
+    .showcase-bar {
+      height: 42px;
+      background: #090e1a;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+    }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-red { background: #ef4444; }
+    .dot-yellow { background: #f59e0b; }
+    .dot-green { background: #10b981; }
+    .showcase-url {
+      margin-left: 12px;
+      padding: 4px 16px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-dim);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+    .video-container {
+      position: relative;
+      width: 100%;
+      background: #000;
+      line-height: 0;
+    }
+    .video-container video {
+      width: 100%;
+      height: auto;
+      max-height: 720px;
+      display: block;
+      outline: none;
+    }
+
+    section.matrix-section {
+      padding: 6rem 0;
+      border-top: 1px solid var(--border-color);
+    }
+    .section-head {
+      text-align: center;
+      margin-bottom: 3.5rem;
+    }
+    .section-head p.eyebrow {
+      color: var(--accent-indigo);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .section-head h2 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .matrix-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .matrix-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-focus);
+    }
+    .matrix-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .matrix-card.skill .matrix-badge { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .matrix-card.badbreak .matrix-badge { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .matrix-card.dumbluck .matrix-badge { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+    .matrix-card.mistake .matrix-badge { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+    .matrix-card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .matrix-card p {
+      color: var(--text-muted);
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    section.features-section {
+      padding: 6rem 0;
+      background: linear-gradient(180deg, transparent 0%, rgba(14, 21, 38, 0.4) 100%);
+    }
+    .feature-item {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      align-items: center;
+      margin-bottom: 6rem;
+    }
+    @media (min-width: 960px) {
+      .feature-item { grid-template-columns: 1fr 1.2fr; }
+      .feature-item.reverse { grid-template-columns: 1.2fr 1fr; }
+      .feature-item.reverse .feature-content { order: 2; }
+      .feature-item.reverse .feature-visual { order: 1; }
+    }
+    .feature-content h3 {
+      font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 1.2rem;
+    }
+    .feature-content p {
+      color: var(--text-muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+    .feature-bullets {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .feature-bullets li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.92rem;
+      color: #cbd5e1;
+    }
+    .feature-bullets li span.check-icon {
+      color: var(--accent-emerald);
+      font-weight: 700;
+    }
+    .feature-visual {
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      background: var(--bg-card);
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+    .feature-visual img {
+      width: 100%;
+      height: auto;
+      display: block;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .feature-visual img:hover {
+      transform: scale(1.02);
+    }
+
+    section.gallery-section {
+      padding: 6rem 0;
+      border-top: 1px solid var(--border-color);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .gallery-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .gallery-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--border-focus);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+    }
+    .gallery-thumb {
+      width: 100%;
+      height: 210px;
+      overflow: hidden;
+      background: #000;
+    }
+    .gallery-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      transition: transform 0.3s ease;
+    }
+    .gallery-card:hover .gallery-thumb img {
+      transform: scale(1.05);
+    }
+    .gallery-info {
+      padding: 16px 20px;
+    }
+    .gallery-info h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .gallery-info p {
+      font-size: 0.82rem;
+      color: var(--text-dim);
+    }
+
+    section.tech-section {
+      padding: 6rem 0;
+      background: var(--bg-card);
+      border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
+    }
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .tech-box {
+      padding: 24px;
+      border-radius: var(--radius-md);
+      background: rgba(8, 12, 20, 0.6);
+      border: 1px solid var(--border-color);
+    }
+    .tech-box h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tech-box ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .tech-box ul li strong {
+      color: #fff;
+    }
+
+    section.quickstart-section {
+      padding: 6rem 0;
+      text-align: center;
+    }
+    .code-terminal {
+      max-width: 800px;
+      margin: 2.5rem auto 0;
+      background: #050810;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      text-align: left;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+    }
+    .terminal-header {
+      background: #0d121f;
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .terminal-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+    }
+    .terminal-body {
+      padding: 24px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      line-height: 1.7;
+      color: #38bdf8;
+      overflow-x: auto;
+    }
+    .terminal-body .comment { color: #64748b; }
+    .terminal-body .cmd { color: #f1f5f9; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 2rem;
+    }
+    .modal-backdrop.active { display: flex; }
+    .modal-content {
+      max-width: 95vw;
+      max-height: 90vh;
+      position: relative;
+    }
+    .modal-content img {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .modal-close {
+      position: absolute;
+      top: -45px;
+      right: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 32px;
+      cursor: pointer;
+    }
+
+    footer.site-footer {
+      border-top: 1px solid var(--border-color);
+      padding: 4rem 0 3rem;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 1.5rem;
+    }
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div class="ambient-glow"></div>
+
+  <!-- Header -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="#" class="brand-logo">
+        <div class="brand-icon">T</div>
+        <div>
+          <span class="brand-title">TRACE</span>
+          <span class="brand-tagline">Decision Intelligence</span>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="#video-demo">Video Tour</a>
+        <a href="#matrix">Decision Matrix</a>
+        <a href="#features">Features</a>
+        <a href="#gallery">Live Gallery</a>
+        <a href="#specs">Specs & Security</a>
+        <a href="#quickstart">Quick Start</a>
+      </nav>
+      <div class="header-actions">
+        <a href="guide.md" class="btn btn-secondary" target="_blank">Docs Manual ↗</a>
+        <a href="https://github.com/hkjang/trace" class="btn btn-primary" target="_blank">GitHub Repo ★</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="pulse-dot"></span>
+        Enterprise Decision Intelligence Platform
+      </div>
+      <h1 class="hero-headline">
+        그때의 판단 속으로,<br />
+        <em>시간을 되돌려 다시 들어갑니다.</em>
+      </h1>
+      <p class="hero-subhead">
+        결과가 나온 뒤에 과거를 비판하는 사후 확증 편향(Hindsight Bias)을 제거하세요.<br />
+        Trace는 결정 당시의 정보·논리·전제·확신도를 시간축에 안전하게 보존하고,<br />
+        과거 시점으로 <strong>Decision Replay</strong>하여 판단의 진짜 품질을 자산화합니다.
+      </p>
+      <div class="hero-ctas">
+        <a href="#quickstart" class="btn btn-primary" style="padding: 14px 28px; font-size: 1rem;">로컬에서 30초 만에 시작하기 →</a>
+        <a href="#video-demo" class="btn btn-secondary" style="padding: 14px 28px; font-size: 1rem;">▶ 3분 제품 시연 비디오 보기</a>
+      </div>
+
+      <!-- 3-Minute Video Showcase -->
+      <div id="video-demo" class="video-showcase-wrap">
+        <div class="showcase-bar">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+          <div class="showcase-url">trace-demo-walkthrough.mp4 (1440x900 HD · 2m 13s)</div>
+        </div>
+        <div class="video-container">
+          <video controls preload="metadata" poster="images/08_decision_detail_graph.png">
+            <source src="trace-demo.mp4" type="video/mp4">
+            브라우저가 HTML5 비디오 태그를 지원하지 않습니다.
+          </video>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Decision Matrix Section -->
+  <section id="matrix" class="matrix-section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">The Decision Matrix</p>
+        <h2>좋은 결과가 항상 좋은 판단은 아닙니다</h2>
+      </div>
+      <div class="matrix-grid">
+        <div class="matrix-card skill">
+          <span class="matrix-badge">Skill (역량)</span>
+          <h3>좋은 판단 × 좋은 결과</h3>
+          <p>철저한 근거와 명확한 전제로 기대치를 달성한 성공 사례. 조직의 핵심 플레이북으로 내재화합니다.</p>
+        </div>
+        <div class="matrix-card badbreak">
+          <span class="matrix-badge">Bad Break (불운)</span>
+          <h3>좋은 판단 × 나쁜 결과</h3>
+          <p>당시 정보 수준에서 최선의 선택이었으나 예상치 못한 외생 변수로 실패한 사례. 담당자를 비난하지 않고 전제를 갱신합니다.</p>
+        </div>
+        <div class="matrix-card dumbluck">
+          <span class="matrix-badge">Dumb Luck (요행)</span>
+          <h3>나쁜 판단 × 좋은 결과</h3>
+          <p>근거와 전제가 빈약했으나 운 좋게 성공한 사례. 재현 불가능한 성공에 도취되는 것을 방지합니다.</p>
+        </div>
+        <div class="matrix-card mistake">
+          <span class="matrix-badge">Mistake (오판)</span>
+          <h3>나쁜 판단 × 나쁜 결과</h3>
+          <p>전제 오류와 확신 과잉으로 발생한 오판. 당시 어떤 신호를 놓쳤는지 AI와 함께 회고하여 학습합니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Highlights -->
+  <section id="features" class="features-section">
+    <div class="container">
+      
+      <!-- Feature 1 -->
+      <div class="feature-item">
+        <div class="feature-content">
+          <p class="eyebrow" style="color: var(--accent-blue); font-weight:700; margin-bottom:0.5rem;">01 · STRUCTURED REASONING</p>
+          <h3>5단계 가이드로 완성하는<br />의사결정의 뼈대</h3>
+          <p>산발적인 회의록 대신, 판단에 꼭 필요한 5가지 핵심 요소를 단계별로 기록합니다.</p>
+          <ul class="feature-bullets">
+            <li><span class="check-icon">✓</span> <strong>Decision</strong>: 결론과 실행 지침의 명확한 정의</li>
+            <li><span class="check-icon">✓</span> <strong>Why & Assumptions</strong>: 숨은 전제와 기각된 대안(Alternatives) 보존</li>
+            <li><span class="check-icon">✓</span> <strong>Known_at Evidence</strong>: 정보의 생성일이 아닌 '내가 알게 된 시점' 기록</li>
+            <li><span class="check-icon">✓</span> <strong>Invalidation Signal</strong>: 이 판단이 틀렸음을 입증할 반증 기준 사전 선언</li>
+            <li><span class="check-icon">✓</span> <strong>Confidence Gauge</strong>: 기록 당시의 주관적 확신도(0~100%) 보존</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <img src="images/03_new_decision_step1.png" alt="5-Step Decision Structuring" onclick="openModal(this.src)">
+        </div>
+      </div>
+
+      <!-- Feature 2 -->
+      <div class="feature-item reverse">
+        <div class="feature-content">
+          <p class="eyebrow" style="color: var(--accent-indigo); font-weight:700; margin-bottom:0.5rem;">02 · TIME TRAVEL REPLAY</p>
+          <h3>미래 정보를 제거하고<br />당시의 눈으로 다시 봅니다</h3>
+          <p>Time Slider를 움직이면 사후에 알게 된 결과와 증거가 그래프에서 완전히 필터링됩니다. 당시 알고 있던 정보만으로 과거의 나를 마주하세요.</p>
+          <ul class="feature-bullets">
+            <li><span class="check-icon">✓</span> <strong>Mathematical Filtering</strong>: <code>known_at &gt; replay_time</code>인 미래 노드 완벽 차단</li>
+            <li><span class="check-icon">✓</span> <strong>Then vs Now</strong>: 당시의 기대치와 현재의 실제 성과 비교</li>
+            <li><span class="check-icon">✓</span> <strong>AI Historical Review</strong>: 과거 시점 컨텍스트 기반 LLM 객관성 검토</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <img src="images/12_decision_time_replay.png" alt="Decision Time Replay" onclick="openModal(this.src)">
+        </div>
+      </div>
+
+      <!-- Feature 3 -->
+      <div class="feature-item">
+        <div class="feature-content">
+          <p class="eyebrow" style="color: var(--accent-purple); font-weight:700; margin-bottom:0.5rem;">03 · DECISION INTELLIGENCE</p>
+          <h3>개인과 조직의 사고 습관을<br />데이터로 분석합니다</h3>
+          <p>시간이 흐를수록 축적되는 의사결정 데이터를 통해, 나의 확신도가 실제 결과와 얼마나 일치하는지 교정(Calibration)할 수 있습니다.</p>
+          <ul class="feature-bullets">
+            <li><span class="check-icon">✓</span> <strong>평균 확신도 및 근거 깊이(Evidence Depth)</strong> 추적</li>
+            <li><span class="check-icon">✓</span> <strong>Skill vs Luck 사분면 매트릭스</strong> 실시간 집계</li>
+            <li><span class="check-icon">✓</span> <strong>팀장 승인 및 다자간 검토 워크플로우</strong> 통합</li>
+          </ul>
+        </div>
+        <div class="feature-visual">
+          <img src="images/14_insights_analytics.png" alt="Decision Analytics & Insights" onclick="openModal(this.src)">
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Live Product Gallery -->
+  <section id="gallery" class="gallery-section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Product Tour</p>
+        <h2>Trace 서비스 전 화면 갤러리</h2>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-card" onclick="openModal('images/01_login_page.png')">
+          <div class="gallery-thumb"><img src="images/01_login_page.png" alt="로그인 화면"></div>
+          <div class="gallery-info"><h4>01. 로그인 및 OIDC SSO</h4><p>로컬 관리자 및 Keycloak OIDC 지원</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/02_home_dashboard.png')">
+          <div class="gallery-thumb"><img src="images/02_home_dashboard.png" alt="홈 대시보드"></div>
+          <div class="gallery-info"><h4>02. 시간의 흐름 (홈 대시보드)</h4><p>진행 중인 의사결정 타임라인</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/03_new_decision_step1.png')">
+          <div class="gallery-thumb"><img src="images/03_new_decision_step1.png" alt="판단 생성 Step 1"></div>
+          <div class="gallery-info"><h4>03. Step 1: Decision</h4><p>판단 제목, 결론, 카테고리, 시점</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/04_new_decision_step2.png')">
+          <div class="gallery-thumb"><img src="images/04_new_decision_step2.png" alt="판단 생성 Step 2"></div>
+          <div class="gallery-info"><h4>04. Step 2: Why & Assumptions</h4><p>선택 이유, 숨은 전제, 대안 목록</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/05_new_decision_step3.png')">
+          <div class="gallery-thumb"><img src="images/05_new_decision_step3.png" alt="판단 생성 Step 3"></div>
+          <div class="gallery-info"><h4>05. Step 3: Evidence (Known_at)</h4><p>앎의 시점이 바인딩된 증거</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/06_new_decision_step4.png')">
+          <div class="gallery-thumb"><img src="images/06_new_decision_step4.png" alt="판단 생성 Step 4"></div>
+          <div class="gallery-info"><h4>06. Step 4: Expectation</h4><p>성공 기준 및 Invalidation 반증 신호</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/07_new_decision_step5.png')">
+          <div class="gallery-thumb"><img src="images/07_new_decision_step5.png" alt="판단 생성 Step 5"></div>
+          <div class="gallery-info"><h4>07. Step 5: Confidence</h4><p>0~100% 확신 수준 게이지</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/08_decision_detail_graph.png')">
+          <div class="gallery-thumb"><img src="images/08_decision_detail_graph.png" alt="디시전 인터랙티브 그래프"></div>
+          <div class="gallery-info"><h4>08. Interactive Flow Graph</h4><p>React Flow 기반 의사결정 시각화</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/12_decision_time_replay.png')">
+          <div class="gallery-thumb"><img src="images/12_decision_time_replay.png" alt="Time Replay"></div>
+          <div class="gallery-info"><h4>09. Decision Replay</h4><p>과거 시점 시각화 및 미래 정보 필터링</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/14_insights_analytics.png')">
+          <div class="gallery-thumb"><img src="images/14_insights_analytics.png" alt="판단 패턴 분석"></div>
+          <div class="gallery-info"><h4>10. Decision Matrix & Insights</h4><p>Skill vs Luck 매트릭스 및 통계</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/15_approvals_reviews.png')">
+          <div class="gallery-thumb"><img src="images/15_approvals_reviews.png" alt="검토함"></div>
+          <div class="gallery-info"><h4>11. Team Approvals & Reviews</h4><p>팀장 검토 및 승인 대기열</p></div>
+        </div>
+        <div class="gallery-card" onclick="openModal('images/16_admin_settings_rbac.png')">
+          <div class="gallery-thumb"><img src="images/16_admin_settings_rbac.png" alt="관리자 설정"></div>
+          <div class="gallery-info"><h4>12. Admin & Security Console</h4><p>RBAC, Encryption, OIDC, LLM 설정</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Specs -->
+  <section id="specs" class="tech-section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Enterprise Specifications</p>
+        <h2>타협 없는 보안성과 확장 아키텍처</h2>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-box">
+          <h3>🔐 Envelope Encryption</h3>
+          <ul>
+            <li><strong>AES-256-GCM</strong> 사용자별 데이터 키 암호화</li>
+            <li>마스터 키/개인 키 무중단 회전 지원</li>
+            <li>개인화와 분리된 완전 격리 관리 영역</li>
+          </ul>
+        </div>
+        <div class="tech-box">
+          <h3>⚡ Single Binary Deploy</h3>
+          <ul>
+            <li><strong>Go 1.26 + Embedded React SPA</strong></li>
+            <li>외부 의존성 없는 단일 실행 바이너리</li>
+            <li>PostgreSQL 15+ 기반 신속한 마이그레이션</li>
+          </ul>
+        </div>
+        <div class="tech-box">
+          <h3>🤖 AI & MCP Endpoint</h3>
+          <ul>
+            <li><strong>/mcp</strong> Streamable HTTP MCP 엔드포인트</li>
+            <li>OpenAI 호환 Chat SSE 스트리밍</li>
+            <li>최대 256K 토큰 컨텍스트 지원</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Start Section -->
+  <section id="quickstart" class="quickstart-section">
+    <div class="container">
+      <div class="section-head">
+        <p class="eyebrow">Ready to deploy?</p>
+        <h2>30초 만에 로컬에서 실행하기</h2>
+      </div>
+      
+      <div class="code-terminal">
+        <div class="terminal-header">
+          <div style="display:flex;gap:6px;"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+          <div class="terminal-title">bash · quickstart.sh</div>
+        </div>
+        <div class="terminal-body">
+          <span class="comment"># 1. PostgreSQL 컨테이너 실행</span><br>
+          <span class="cmd">docker run -d --name trace-db -p 5432:5432 -e POSTGRES_USER=trace -e POSTGRES_PASSWORD=password -e POSTGRES_DB=trace postgres:16-alpine</span><br><br>
+          <span class="comment"># 2. 필수 환경변수 설정 (정확히 4개)</span><br>
+          <span class="cmd">export POSTGRES_DSN='postgres://trace:password@127.0.0.1:5432/trace?sslmode=disable'</span><br>
+          <span class="cmd">export BOOTSTRAP_ADMIN='admin@example.internal'</span><br>
+          <span class="cmd">export BOOTSTRAP_ADMIN_PASSWORD='a-long-bootstrap-password'</span><br>
+          <span class="cmd">export ENCRYPTION_KEY="$(openssl rand -base64 32)"</span><br><br>
+          <span class="comment"># 3. Trace 서비스 빌드 및 실행</span><br>
+          <span class="cmd">./trace</span><br><br>
+          <span class="comment"># 4. 브라우저에서 http://localhost:8080 접속!</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal Viewer -->
+  <div id="imageModal" class="modal-backdrop" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="modal-close" onclick="closeModal()">×</button>
+      <img id="modalImg" src="" alt="확대 이미지">
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="guide.md">사용자 가이드</a>
+        <a href="cru-manual.md">CRU 매뉴얼</a>
+        <a href="architecture.md">아키텍처</a>
+        <a href="security.md">보안 명세</a>
+        <a href="api.md">REST & MCP API</a>
+        <a href="https://github.com/hkjang/trace">GitHub</a>
+      </div>
+      <p>Copyright © 2026 Trace Contributors. Remember why you decided.</p>
+    </div>
+  </footer>
+
+  <script>
+    function openModal(src) {
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imageModal').classList.add('active');
+    }
+    function closeModal() {
+      document.getElementById('imageModal').classList.remove('active');
+    }
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeModal();
+    });
+  </script>
+</body>
+</html>

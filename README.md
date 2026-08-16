@@ -1,7 +1,9 @@
 # Trace
 
 <div align="center">
-  <img src="docs/images/08_decision_detail_graph.png" alt="Trace Decision Flow Graph" width="900" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+  <a href="docs/index.html#video-demo">
+    <img src="docs/images/08_decision_detail_graph.png" alt="Trace Decision Flow Graph & Video Demo" width="900" style="border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);" />
+  </a>
 
   <p align="center">
     <strong>Remember why you decided.</strong><br />
@@ -10,6 +12,7 @@
 
   <p align="center">
     <a href="docs/index.html"><strong>🌐 웹 홍보 및 소개 페이지</strong></a> •
+    <a href="docs/trace-demo.mp4"><strong>🎬 3분 제품 시연 비디오 (MP4)</strong></a> •
     <a href="docs/guide.md"><strong>📖 사용자 가이드</strong></a> •
     <a href="docs/cru-manual.md"><strong>⚙️ CRU 매뉴얼</strong></a> •
     <a href="docs/architecture.md"><strong>🏛️ 아키텍처</strong></a> •
@@ -28,6 +31,15 @@
 - **Skill vs Luck 판단 매트릭스**: 좋은 판단과 좋은 결과를 독립적으로 교차 분석하여 조직의 의사결정 역량을 자산화
 - **Zero-Trust & Envelope Encryption**: 사용자별 AES-256-GCM 봉투 암호화, Keycloak OIDC SSO, 무중단 키 회전
 - **AI Streaming Co-Pilot & Streamable HTTP MCP**: 과거 시점 컨텍스트 기반 LLM 객관성 검토 및 `/mcp` 엔드포인트 지원
+
+---
+
+## 🎬 3분 제품 시연 비디오 (Demo Video)
+
+서비스의 전체 라이프사이클(로그인 → 5단계 판단 입력 → 대화형 노드 그래프 → 사후 증거/결과/회고 등록 → 과거 시점 Decision Replay → 인사이트 & 관리자 콘솔)을 담은 데모 비디오를 제공합니다:
+
+- **동영상 파일**: [`docs/trace-demo.mp4`](docs/trace-demo.mp4) (1440×900 HD, H.264, 3.2MB)
+- **온라인 시청**: [`docs/index.html#video-demo`](docs/index.html#video-demo) (웹 비디오 플레이어)
 
 ---
 
@@ -79,6 +91,7 @@ export ENCRYPTION_KEY="$(openssl rand -base64 32)"
 ## 📚 상세 문서 목록
 
 - [🌐 홍보 및 쇼케이스 웹페이지 (`docs/index.html`)](docs/index.html)
+- [🎬 3분 제품 시연 동영상 (`docs/trace-demo.mp4`)](docs/trace-demo.mp4)
 - [📖 사용자 가이드 (`docs/guide.md`)](docs/guide.md)
 - [⚙️ CRU (Create, Read, Update/Replay) 실무 매뉴얼 (`docs/cru-manual.md`)](docs/cru-manual.md)
 - [🏛️ 아키텍처 및 시스템 설계 (`docs/architecture.md`)](docs/architecture.md)
