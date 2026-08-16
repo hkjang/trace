@@ -1,4 +1,4 @@
-import { ArrowUpRight, CalendarClock, CircleDotDashed, Plus } from 'lucide-react'
+import { ArrowUpRight, CalendarClock, CircleDotDashed, HeartPulse, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, formatDate } from '../lib/api'
@@ -16,6 +16,7 @@ export default function HomePage() {
     <PageHeader eyebrow="YOUR DECISION MEMORY" title="시간의 흐름"><span>{formatDate(new Date().toISOString())} · 지금 추적 중인 판단을 중심으로 보여줍니다.</span></PageHeader>
     {data.recent.length === 0 ? <Empty title="당신의 결정은 생각보다 빨리 사라집니다." action={<Link className="button primary" to="/decisions/new"><Plus size={18} />기억할 첫 판단 남기기</Link>}><p>근거와 기대를 지금 남겨, 미래의 내가 당시의 판단을 정직하게 다시 볼 수 있게 하세요.</p></Empty> : <>
       <div className="status-ribbon" aria-label="판단 현황"><span><strong>{data.activeCount}</strong>진행 중</span><span><strong>{data.waitingCount}</strong>승인 대기</span><span><strong>{data.reviewDue}</strong>회고 필요</span><span><strong>{data.closedCount}</strong>완료</span></div>
+      {!!data.reviewInbox?.length && <section className="home-review-inbox"><header><div><p className="eyebrow">TODAY</p><h2><HeartPulse size={19} />{data.reviewInbox.length}개의 판단이 주의를 기다립니다</h2></div><Link to="/reviews" className="text-link">Review Inbox <ArrowUpRight size={15} /></Link></header><div>{data.reviewInbox.map(item => <Link key={item.decisionId} to={`/decisions/${item.decisionId}`}><span className={`health-light ${item.health.toLowerCase()}`} /><strong>{item.title}</strong><small>{item.reasons[0]}</small><b>{item.priority}</b></Link>)}</div></section>}
       <section className="focus-stage">
         <div className="stage-date"><span>{new Date(focus!.decidedAt).getFullYear()}</span><strong>{new Intl.DateTimeFormat('en', { month: 'short', day: '2-digit' }).format(new Date(focus!.decidedAt)).toUpperCase()}</strong></div>
         <div className="focus-threads" aria-hidden="true"><span className="thread left" /><span className="thread right dotted" /></div>

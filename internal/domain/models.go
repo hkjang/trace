@@ -58,6 +58,7 @@ type AISettings struct {
 	Protocol          string `json:"protocol"`
 	APIKey            string `json:"apiKey,omitempty"`
 	Model             string `json:"model"`
+	EmbeddingModel    string `json:"embeddingModel"`
 	MaxOutputTokens   int    `json:"maxOutputTokens"`
 	ContextWindow     int    `json:"contextWindow"`
 	RequestTimeoutSec int    `json:"requestTimeoutSec"`
@@ -75,31 +76,36 @@ type BrandingSettings struct {
 }
 
 type Decision struct {
-	ID                     uuid.UUID       `json:"id"`
-	OwnerID                uuid.UUID       `json:"ownerId"`
-	OwnerName              string          `json:"ownerName,omitempty"`
-	TeamID                 *uuid.UUID      `json:"teamId,omitempty"`
-	Title                  string          `json:"title"`
-	Category               string          `json:"category"`
-	Decision               string          `json:"decision"`
-	Reason                 string          `json:"reason"`
-	Assumptions            string          `json:"assumptions"`
-	InvalidationConditions string          `json:"invalidationConditions"`
-	Confidence             int             `json:"confidence"`
-	Status                 string          `json:"status"`
-	WorkflowState          string          `json:"workflowState"`
-	DecidedAt              time.Time       `json:"decidedAt"`
-	ReviewAt               *time.Time      `json:"reviewAt,omitempty"`
-	CreatedAt              time.Time       `json:"createdAt"`
-	UpdatedAt              time.Time       `json:"updatedAt"`
-	Version                int             `json:"version"`
-	Alternatives           []Alternative   `json:"alternatives,omitempty"`
-	Evidence               []Evidence      `json:"evidence,omitempty"`
-	Expectations           []Expectation   `json:"expectations,omitempty"`
-	Outcomes               []Outcome       `json:"outcomes,omitempty"`
-	Reflections            []Reflection    `json:"reflections,omitempty"`
-	Insights               []AIInsight     `json:"insights,omitempty"`
-	Events                 []DecisionEvent `json:"events,omitempty"`
+	ID                     uuid.UUID               `json:"id"`
+	OwnerID                uuid.UUID               `json:"ownerId"`
+	OwnerName              string                  `json:"ownerName,omitempty"`
+	TeamID                 *uuid.UUID              `json:"teamId,omitempty"`
+	Title                  string                  `json:"title"`
+	Category               string                  `json:"category"`
+	Decision               string                  `json:"decision"`
+	Reason                 string                  `json:"reason"`
+	Assumptions            string                  `json:"assumptions"`
+	InvalidationConditions string                  `json:"invalidationConditions"`
+	Confidence             int                     `json:"confidence"`
+	Status                 string                  `json:"status"`
+	WorkflowState          string                  `json:"workflowState"`
+	DecidedAt              time.Time               `json:"decidedAt"`
+	ReviewAt               *time.Time              `json:"reviewAt,omitempty"`
+	CreatedAt              time.Time               `json:"createdAt"`
+	UpdatedAt              time.Time               `json:"updatedAt"`
+	Version                int                     `json:"version"`
+	Alternatives           []Alternative           `json:"alternatives,omitempty"`
+	Evidence               []Evidence              `json:"evidence,omitempty"`
+	Expectations           []Expectation           `json:"expectations,omitempty"`
+	Outcomes               []Outcome               `json:"outcomes,omitempty"`
+	Reflections            []Reflection            `json:"reflections,omitempty"`
+	Insights               []AIInsight             `json:"insights,omitempty"`
+	Events                 []DecisionEvent         `json:"events,omitempty"`
+	AssumptionItems        []Assumption            `json:"assumptionItems,omitempty"`
+	Invalidations          []InvalidationCondition `json:"invalidations,omitempty"`
+	ConfidenceHistory      []ConfidenceRecord      `json:"confidenceHistory,omitempty"`
+	LatestScore            *DecisionScore          `json:"latestScore,omitempty"`
+	Health                 string                  `json:"health,omitempty"`
 }
 
 type DecisionInput struct {
@@ -130,6 +136,7 @@ type DecisionPatch struct {
 	Status                 *string    `json:"status"`
 	ReviewAt               *time.Time `json:"reviewAt"`
 	Version                int        `json:"version"`
+	ChangeReason           string     `json:"changeReason"`
 }
 
 type Alternative struct {
@@ -222,12 +229,192 @@ type DecisionEvent struct {
 	CreatedAt   time.Time       `json:"createdAt"`
 }
 
+type DecisionVersion struct {
+	ID                     uuid.UUID  `json:"id"`
+	DecisionID             uuid.UUID  `json:"decisionId"`
+	Version                int        `json:"version"`
+	Title                  string     `json:"title"`
+	Category               string     `json:"category"`
+	Decision               string     `json:"decision"`
+	Reason                 string     `json:"reason"`
+	Assumptions            string     `json:"assumptions"`
+	InvalidationConditions string     `json:"invalidationConditions"`
+	Confidence             int        `json:"confidence"`
+	Status                 string     `json:"status"`
+	WorkflowState          string     `json:"workflowState"`
+	DecidedAt              time.Time  `json:"decidedAt"`
+	ReviewAt               *time.Time `json:"reviewAt,omitempty"`
+	ChangeReason           string     `json:"changeReason"`
+	ChangedBy              *uuid.UUID `json:"changedBy,omitempty"`
+	ValidFrom              time.Time  `json:"validFrom"`
+	ValidTo                *time.Time `json:"validTo,omitempty"`
+	CreatedAt              time.Time  `json:"createdAt"`
+}
+
+type ConfidenceRecord struct {
+	ID         uuid.UUID `json:"id"`
+	DecisionID uuid.UUID `json:"decisionId"`
+	Confidence int       `json:"confidence"`
+	Reason     string    `json:"reason"`
+	RecordedAt time.Time `json:"recordedAt"`
+	CreatedAt  time.Time `json:"createdAt"`
+}
+
+type AssumptionEvent struct {
+	ID             uuid.UUID  `json:"id"`
+	PreviousStatus *string    `json:"previousStatus,omitempty"`
+	Status         string     `json:"status"`
+	Reason         string     `json:"reason"`
+	EvidenceID     *uuid.UUID `json:"evidenceId,omitempty"`
+	KnownAt        time.Time  `json:"knownAt"`
+	CreatedAt      time.Time  `json:"createdAt"`
+}
+
+type Assumption struct {
+	ID         uuid.UUID         `json:"id"`
+	DecisionID uuid.UUID         `json:"decisionId"`
+	Assumption string            `json:"assumption"`
+	Status     string            `json:"status"`
+	KnownAt    time.Time         `json:"knownAt"`
+	CreatedAt  time.Time         `json:"createdAt"`
+	UpdatedAt  time.Time         `json:"updatedAt"`
+	Events     []AssumptionEvent `json:"events,omitempty"`
+}
+
+type InvalidationCondition struct {
+	ID            uuid.UUID  `json:"id"`
+	DecisionID    uuid.UUID  `json:"decisionId"`
+	Condition     string     `json:"condition"`
+	Status        string     `json:"status"`
+	EvidenceID    *uuid.UUID `json:"evidenceId,omitempty"`
+	DetectionNote string     `json:"detectionNote"`
+	KnownAt       time.Time  `json:"knownAt"`
+	TriggeredAt   *time.Time `json:"triggeredAt,omitempty"`
+	CreatedAt     time.Time  `json:"createdAt"`
+	UpdatedAt     time.Time  `json:"updatedAt"`
+}
+
+type DecisionLink struct {
+	ID               uuid.UUID `json:"id"`
+	SourceDecisionID uuid.UUID `json:"sourceDecisionId"`
+	TargetDecisionID uuid.UUID `json:"targetDecisionId"`
+	RelationType     string    `json:"relationType"`
+	Description      string    `json:"description"`
+	EffectiveAt      time.Time `json:"effectiveAt"`
+	CreatedAt        time.Time `json:"createdAt"`
+}
+
+type GraphNode struct {
+	ID         uuid.UUID `json:"id"`
+	Title      string    `json:"title"`
+	Category   string    `json:"category"`
+	Status     string    `json:"status"`
+	Confidence int       `json:"confidence"`
+	Outcome    *int      `json:"outcome,omitempty"`
+	DecidedAt  time.Time `json:"decidedAt"`
+	Depth      int       `json:"depth"`
+	Health     string    `json:"health"`
+}
+
+type DecisionGraph struct {
+	FocusID uuid.UUID      `json:"focusId"`
+	At      *time.Time     `json:"at,omitempty"`
+	Nodes   []GraphNode    `json:"nodes"`
+	Edges   []DecisionLink `json:"edges"`
+}
+
+type ReplaySnapshot struct {
+	At                 time.Time `json:"at"`
+	Version            int       `json:"version"`
+	Confidence         int       `json:"confidence"`
+	EvidenceCount      int       `json:"evidenceCount"`
+	AlternativeCount   int       `json:"alternativeCount"`
+	AssumptionCount    int       `json:"assumptionCount"`
+	AtRiskAssumptions  int       `json:"atRiskAssumptions"`
+	OutcomeCount       int       `json:"outcomeCount"`
+	LatestOutcomeScore *int      `json:"latestOutcomeScore,omitempty"`
+	Decision           Decision  `json:"decision"`
+}
+
+type ReplayChange struct {
+	Kind        string `json:"kind"`
+	Label       string `json:"label"`
+	Before      string `json:"before"`
+	After       string `json:"after"`
+	Description string `json:"description"`
+}
+
+type ReplayComparison struct {
+	From    ReplaySnapshot `json:"from"`
+	To      ReplaySnapshot `json:"to"`
+	Changes []ReplayChange `json:"changes"`
+}
+
+type SimilarDecision struct {
+	Decision       Decision `json:"decision"`
+	Similarity     float64  `json:"similarity"`
+	ContextScore   float64  `json:"contextScore"`
+	MatchedExcerpt string   `json:"matchedExcerpt"`
+	Reasons        []string `json:"reasons"`
+}
+
+type DecisionScore struct {
+	EvidenceQuality          *int       `json:"evidenceQuality,omitempty"`
+	LogicQuality             *int       `json:"logicQuality,omitempty"`
+	AlternativeConsideration *int       `json:"alternativeConsideration,omitempty"`
+	RiskAwareness            *int       `json:"riskAwareness,omitempty"`
+	AssumptionQuality        *int       `json:"assumptionQuality,omitempty"`
+	Calibration              *int       `json:"calibration,omitempty"`
+	CounterEvidence          *int       `json:"counterEvidence,omitempty"`
+	Overall                  *int       `json:"overall,omitempty"`
+	ReplayAt                 *time.Time `json:"replayAt,omitempty"`
+	EstimatedAt              time.Time  `json:"estimatedAt"`
+}
+
+type ReviewItem struct {
+	DecisionID   uuid.UUID  `json:"decisionId"`
+	Title        string     `json:"title"`
+	Category     string     `json:"category"`
+	Confidence   int        `json:"confidence"`
+	Priority     int        `json:"priority"`
+	Health       string     `json:"health"`
+	Reasons      []string   `json:"reasons"`
+	ReviewAt     *time.Time `json:"reviewAt,omitempty"`
+	LastReviewed *time.Time `json:"lastReviewed,omitempty"`
+	UpdatedAt    time.Time  `json:"updatedAt"`
+}
+
+type BiasProfileItem struct {
+	BiasType   string         `json:"biasType"`
+	Count      int            `json:"count"`
+	Percentage float64        `json:"percentage"`
+	ByCategory map[string]int `json:"byCategory"`
+}
+
+type PatternInsight struct {
+	Code        string `json:"code"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Strength    string `json:"strength"`
+}
+
+type DecisionProfile struct {
+	EvidenceDriven      string `json:"evidenceDriven"`
+	RiskTolerance       string `json:"riskTolerance"`
+	AlternativeThinking string `json:"alternativeThinking"`
+	DecisionSpeed       string `json:"decisionSpeed"`
+	ConfidenceStyle     string `json:"confidenceStyle"`
+	ReflectionHabit     string `json:"reflectionHabit"`
+	Summary             string `json:"summary"`
+}
+
 type Dashboard struct {
-	ActiveCount  int        `json:"activeCount"`
-	WaitingCount int        `json:"waitingCount"`
-	ReviewDue    int        `json:"reviewDue"`
-	ClosedCount  int        `json:"closedCount"`
-	Recent       []Decision `json:"recent"`
+	ActiveCount  int          `json:"activeCount"`
+	WaitingCount int          `json:"waitingCount"`
+	ReviewDue    int          `json:"reviewDue"`
+	ClosedCount  int          `json:"closedCount"`
+	Recent       []Decision   `json:"recent"`
+	ReviewInbox  []ReviewItem `json:"reviewInbox"`
 }
 
 type ApprovalRequest struct {
@@ -292,4 +479,7 @@ type Analytics struct {
 	GoodLuck          int                 `json:"goodLuck"`
 	Mistake           int                 `json:"mistake"`
 	Calibration       []CalibrationBucket `json:"calibration"`
+	Biases            []BiasProfileItem   `json:"biases"`
+	Patterns          []PatternInsight    `json:"patterns"`
+	Profile           DecisionProfile     `json:"profile"`
 }

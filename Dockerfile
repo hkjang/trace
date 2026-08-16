@@ -7,7 +7,7 @@ COPY frontend/ ./
 RUN npm run build
 
 FROM golang:1.26-alpine AS go-builder
-ARG VERSION=0.1.1-dev
+ARG VERSION=0.2.0-dev
 ARG COMMIT=unknown
 ARG BUILD_TIME=unknown
 WORKDIR /src
@@ -20,9 +20,9 @@ RUN CGO_ENABLED=0 GOOS=linux go build -trimpath \
     -o /out/trace ./cmd/trace
 
 FROM alpine:3.23
-ARG VERSION=0.1.1-dev
+ARG VERSION=0.2.0-dev
 LABEL org.opencontainers.image.title="trace" \
-      org.opencontainers.image.description="Decision memory and replay service" \
+      org.opencontainers.image.description="Temporal decision intelligence service" \
       org.opencontainers.image.source="https://github.com/hkjang/trace" \
       org.opencontainers.image.version="${VERSION}"
 RUN apk add --no-cache ca-certificates tzdata && addgroup -S trace && adduser -S -G trace trace

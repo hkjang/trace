@@ -134,6 +134,9 @@ func mcpTools(user domain.User, scopes []string) []map[string]any {
 		tools = append(tools, map[string]any{"name": "trace.list_decisions", "title": "List Trace decisions", "description": "List decisions visible to the authenticated user.", "inputSchema": map[string]any{"type": "object", "properties": map[string]any{"status": map[string]string{"type": "string"}, "query": map[string]string{"type": "string"}}, "additionalProperties": false}, "annotations": map[string]any{"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true}})
 		tools = append(tools, map[string]any{"name": "trace.get_decision", "title": "Get a Trace decision", "description": "Get a decision with evidence, expectations, outcomes, reflections, AI insights, and temporal events.", "inputSchema": map[string]any{"type": "object", "properties": map[string]any{"id": map[string]string{"type": "string", "format": "uuid"}}, "required": []string{"id"}, "additionalProperties": false}, "annotations": map[string]any{"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true}})
 		tools = append(tools, map[string]any{"name": "trace.replay_decision", "title": "Replay a Trace decision", "description": "Return only information known on or before the supplied RFC3339 timestamp.", "inputSchema": map[string]any{"type": "object", "properties": map[string]any{"id": map[string]string{"type": "string", "format": "uuid"}, "at": map[string]string{"type": "string", "format": "date-time"}}, "required": []string{"id", "at"}, "additionalProperties": false}, "annotations": map[string]any{"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true}})
+		tools = append(tools, map[string]any{"name": "trace.compare_replay", "title": "Compare two Trace replay snapshots", "description": "Compare the exact decision state at two RFC3339 timestamps.", "inputSchema": map[string]any{"type": "object", "properties": map[string]any{"id": map[string]string{"type": "string", "format": "uuid"}, "from": map[string]string{"type": "string", "format": "date-time"}, "to": map[string]string{"type": "string", "format": "date-time"}}, "required": []string{"id", "from", "to"}, "additionalProperties": false}, "annotations": map[string]any{"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true}})
+		tools = append(tools, map[string]any{"name": "trace.get_decision_graph", "title": "Explore a Trace decision graph", "description": "Return the focus decision and its one or two hop network.", "inputSchema": map[string]any{"type": "object", "properties": map[string]any{"id": map[string]string{"type": "string", "format": "uuid"}, "depth": map[string]any{"type": "integer", "minimum": 1, "maximum": 2}, "at": map[string]string{"type": "string", "format": "date-time"}}, "required": []string{"id"}, "additionalProperties": false}, "annotations": map[string]any{"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true}})
+		tools = append(tools, map[string]any{"name": "trace.search_memory", "title": "Semantically search Trace memory", "description": "Search decision reasons, evidence, outcomes, and reflections using the configured embedding provider or offline local vectors.", "inputSchema": map[string]any{"type": "object", "properties": map[string]any{"query": map[string]string{"type": "string"}, "category": map[string]string{"type": "string"}, "limit": map[string]any{"type": "integer", "minimum": 1, "maximum": 30}}, "required": []string{"query"}, "additionalProperties": false}, "annotations": map[string]any{"readOnlyHint": true, "destructiveHint": false, "idempotentHint": true}})
 	}
 	if user.Can("decisions.write") && scopeAllowed(scopes, "decisions:write") {
 		tools = append(tools, map[string]any{"name": "trace.create_decision", "title": "Create a Trace decision", "description": "Create a decision record. When administrator approval workflow is enabled, it is created as a draft.", "inputSchema": map[string]any{"type": "object", "properties": map[string]any{"title": map[string]string{"type": "string"}, "decision": map[string]string{"type": "string"}, "reason": map[string]string{"type": "string"}, "expectation": map[string]string{"type": "string"}, "confidence": map[string]any{"type": "integer", "minimum": 0, "maximum": 100}, "decidedAt": map[string]string{"type": "string", "format": "date-time"}}, "required": []string{"title", "decision", "confidence"}, "additionalProperties": false}, "annotations": map[string]any{"readOnlyHint": false, "destructiveHint": false, "idempotentHint": false}})
@@ -194,6 +197,55 @@ func (s *Server) callMCPTool(r *http.Request, user domain.User, scopes []string,
 			return nil, &rpcError{Code: -32602, Message: "id and at are invalid"}
 		}
 		structured, err = s.Store.GetDecision(r.Context(), user, id, &at)
+	case "trace.compare_replay":
+		if !user.Can("decisions.read") || !scopeAllowed(scopes, "decisions:read") {
+			return nil, &rpcError{Code: -32003, Message: "forbidden"}
+		}
+		var args struct{ ID, From, To string }
+		if json.Unmarshal(call.Arguments, &args) != nil {
+			return nil, &rpcError{Code: -32602, Message: "Invalid arguments"}
+		}
+		id, parseErr := uuid.Parse(args.ID)
+		from, fromErr := time.Parse(time.RFC3339, args.From)
+		to, toErr := time.Parse(time.RFC3339, args.To)
+		if parseErr != nil || fromErr != nil || toErr != nil {
+			return nil, &rpcError{Code: -32602, Message: "id, from, and to are invalid"}
+		}
+		structured, err = s.Store.CompareReplay(r.Context(), user, id, from, to)
+	case "trace.get_decision_graph":
+		if !user.Can("decisions.read") || !scopeAllowed(scopes, "decisions:read") {
+			return nil, &rpcError{Code: -32003, Message: "forbidden"}
+		}
+		var args struct {
+			ID    string `json:"id"`
+			Depth int    `json:"depth"`
+			At    string `json:"at"`
+		}
+		if json.Unmarshal(call.Arguments, &args) != nil {
+			return nil, &rpcError{Code: -32602, Message: "Invalid arguments"}
+		}
+		id, parseErr := uuid.Parse(args.ID)
+		var at *time.Time
+		if args.At != "" {
+			parsed, timeErr := time.Parse(time.RFC3339, args.At)
+			if timeErr != nil {
+				return nil, &rpcError{Code: -32602, Message: "at must be RFC3339"}
+			}
+			at = &parsed
+		}
+		if parseErr != nil {
+			return nil, &rpcError{Code: -32602, Message: "id must be a UUID"}
+		}
+		structured, err = s.Store.DecisionGraph(r.Context(), user, &id, args.Depth, "", at, 300)
+	case "trace.search_memory":
+		if !user.Can("decisions.read") || !scopeAllowed(scopes, "decisions:read") {
+			return nil, &rpcError{Code: -32003, Message: "forbidden"}
+		}
+		var args semanticSearchInput
+		if json.Unmarshal(call.Arguments, &args) != nil {
+			return nil, &rpcError{Code: -32602, Message: "Invalid arguments"}
+		}
+		structured, err = s.semanticSearch(r.Context(), user, args, nil)
 	case "trace.create_decision":
 		if !user.Can("decisions.write") || !scopeAllowed(scopes, "decisions:write") {
 			return nil, &rpcError{Code: -32003, Message: "forbidden"}

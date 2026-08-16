@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"crypto/sha256"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -57,12 +58,67 @@ func (s *Store) UpdateDecision(ctx context.Context, actor domain.User, decisionI
 	if patch.Status != nil && *patch.Status != "draft" && *patch.Status != "active" && *patch.Status != "closed" && *patch.Status != "archived" {
 		return domain.Decision{}, ErrValidation
 	}
-	tag, err := s.DB.Exec(ctx, `UPDATE decisions SET title=COALESCE($3,title),category=COALESCE($4,category),decision=COALESCE($5,decision),reason=COALESCE($6,reason),assumptions=COALESCE($7,assumptions),invalidation_conditions=COALESCE($8,invalidation_conditions),confidence=COALESCE($9,confidence),status=COALESCE($10,status),review_at=COALESCE($11,review_at),updated_at=now(),version=version+1 WHERE id=$1 AND version=$2`, decisionID, patch.Version, patch.Title, patch.Category, patch.Decision, patch.Reason, patch.Assumptions, patch.InvalidationConditions, patch.Confidence, patch.Status, patch.ReviewAt)
+	tx, err := s.DB.Begin(ctx)
+	if err != nil {
+		return domain.Decision{}, err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	var oldConfidence int
+	var oldAssumptions, oldInvalidations string
+	if err := tx.QueryRow(ctx, `SELECT confidence,assumptions,invalidation_conditions FROM decisions WHERE id=$1 AND version=$2 FOR UPDATE`, decisionID, patch.Version).Scan(&oldConfidence, &oldAssumptions, &oldInvalidations); err == pgx.ErrNoRows {
+		return domain.Decision{}, ErrConflict
+	} else if err != nil {
+		return domain.Decision{}, err
+	}
+	changedAt := time.Now().UTC()
+	tag, err := tx.Exec(ctx, `UPDATE decisions SET title=COALESCE($3,title),category=COALESCE($4,category),decision=COALESCE($5,decision),reason=COALESCE($6,reason),assumptions=COALESCE($7,assumptions),invalidation_conditions=COALESCE($8,invalidation_conditions),confidence=COALESCE($9,confidence),status=COALESCE($10,status),review_at=COALESCE($11,review_at),updated_at=$12,version=version+1 WHERE id=$1 AND version=$2`, decisionID, patch.Version, patch.Title, patch.Category, patch.Decision, patch.Reason, patch.Assumptions, patch.InvalidationConditions, patch.Confidence, patch.Status, patch.ReviewAt, changedAt)
 	if err != nil {
 		return domain.Decision{}, err
 	}
 	if tag.RowsAffected() == 0 {
 		return domain.Decision{}, ErrConflict
+	}
+	row := tx.QueryRow(ctx, `SELECT d.id,d.owner_id,d.team_id,d.title,d.category,d.decision,d.reason,d.assumptions,d.invalidation_conditions,d.confidence,d.status,d.workflow_state,d.decided_at,d.review_at,d.created_at,d.updated_at,d.version,u.display_name FROM decisions d JOIN users u ON u.id=d.owner_id WHERE d.id=$1`, decisionID)
+	item, err := scanDecision(row)
+	if err != nil {
+		return domain.Decision{}, err
+	}
+	if _, err := tx.Exec(ctx, `UPDATE decision_versions SET valid_to=$2 WHERE decision_id=$1 AND valid_to IS NULL`, decisionID, changedAt); err != nil {
+		return domain.Decision{}, err
+	}
+	if err := insertDecisionVersion(ctx, tx, item, actor.ID, defaultString(patch.ChangeReason, "Decision updated"), changedAt); err != nil {
+		return domain.Decision{}, err
+	}
+	if patch.Confidence != nil && *patch.Confidence != oldConfidence {
+		if err := insertConfidenceRecord(ctx, tx, actor.ID, decisionID, *patch.Confidence, defaultString(patch.ChangeReason, "Decision updated"), changedAt); err != nil {
+			return domain.Decision{}, err
+		}
+	}
+	if patch.Assumptions != nil && strings.TrimSpace(*patch.Assumptions) != "" && strings.TrimSpace(*patch.Assumptions) != strings.TrimSpace(oldAssumptions) {
+		if _, err := insertAssumption(ctx, tx, actor.ID, decisionID, strings.TrimSpace(*patch.Assumptions), "ACTIVE", changedAt); err != nil {
+			return domain.Decision{}, err
+		}
+	}
+	if patch.InvalidationConditions != nil && strings.TrimSpace(*patch.InvalidationConditions) != "" && strings.TrimSpace(*patch.InvalidationConditions) != strings.TrimSpace(oldInvalidations) {
+		conditionID := uuid.New()
+		if _, err := tx.Exec(ctx, `INSERT INTO invalidation_conditions(id,decision_id,condition,status,created_by,known_at) VALUES($1,$2,$3,'ACTIVE',$4,$5)`, conditionID, decisionID, strings.TrimSpace(*patch.InvalidationConditions), actor.ID, changedAt); err != nil {
+			return domain.Decision{}, err
+		}
+		if _, err := tx.Exec(ctx, `INSERT INTO invalidation_events(id,condition_id,status,note,changed_by,known_at) VALUES($1,$2,'ACTIVE','Initial invalidation condition',$3,$4)`, uuid.New(), conditionID, actor.ID, changedAt); err != nil {
+			return domain.Decision{}, err
+		}
+	}
+	if patch.ReviewAt != nil {
+		if _, err := tx.Exec(ctx, `INSERT INTO review_schedules(id,decision_id,next_review_at,created_by) VALUES($1,$2,$3,$4) ON CONFLICT(decision_id) DO UPDATE SET next_review_at=excluded.next_review_at,enabled=true,updated_at=now()`, uuid.New(), decisionID, patch.ReviewAt, actor.ID); err != nil {
+			return domain.Decision{}, err
+		}
+	}
+	payload, _ := json.Marshal(map[string]any{"version": item.Version, "changeReason": defaultString(patch.ChangeReason, "Decision updated")})
+	if _, err := tx.Exec(ctx, `INSERT INTO decision_events(id,decision_id,actor_id,event_type,payload,effective_at,known_at) VALUES($1,$2,$3,'decision.versioned',$4,$5,$5)`, uuid.New(), decisionID, actor.ID, payload, changedAt); err != nil {
+		return domain.Decision{}, err
+	}
+	if err := tx.Commit(ctx); err != nil {
+		return domain.Decision{}, err
 	}
 	return s.GetDecision(ctx, actor, decisionID, nil)
 }
@@ -105,6 +161,31 @@ func (s *Store) CreateDecision(ctx context.Context, actor domain.User, input dom
 		item.ID, item.OwnerID, item.TeamID, item.Title, item.Category, item.Decision, item.Reason, item.Assumptions, item.InvalidationConditions, item.Confidence, item.Status, item.WorkflowState, item.DecidedAt, item.ReviewAt, item.CreatedAt, item.UpdatedAt)
 	if err != nil {
 		return domain.Decision{}, fmt.Errorf("insert decision: %w", err)
+	}
+	if err := insertDecisionVersion(ctx, tx, item, actor.ID, "Initial decision", item.DecidedAt); err != nil {
+		return domain.Decision{}, err
+	}
+	if err := insertConfidenceRecord(ctx, tx, actor.ID, item.ID, item.Confidence, "Initial confidence", item.DecidedAt); err != nil {
+		return domain.Decision{}, err
+	}
+	if item.Assumptions != "" {
+		if _, err := insertAssumption(ctx, tx, actor.ID, item.ID, item.Assumptions, "ACTIVE", item.DecidedAt); err != nil {
+			return domain.Decision{}, err
+		}
+	}
+	if item.InvalidationConditions != "" {
+		conditionID := uuid.New()
+		if _, err := tx.Exec(ctx, `INSERT INTO invalidation_conditions(id,decision_id,condition,status,created_by,known_at) VALUES($1,$2,$3,'ACTIVE',$4,$5)`, conditionID, item.ID, item.InvalidationConditions, actor.ID, item.DecidedAt); err != nil {
+			return domain.Decision{}, err
+		}
+		if _, err := tx.Exec(ctx, `INSERT INTO invalidation_events(id,condition_id,status,note,changed_by,known_at) VALUES($1,$2,'ACTIVE','Initial invalidation condition',$3,$4)`, uuid.New(), conditionID, actor.ID, item.DecidedAt); err != nil {
+			return domain.Decision{}, err
+		}
+	}
+	if item.ReviewAt != nil {
+		if _, err := tx.Exec(ctx, `INSERT INTO review_schedules(id,decision_id,next_review_at,created_by) VALUES($1,$2,$3,$4)`, uuid.New(), item.ID, item.ReviewAt, actor.ID); err != nil {
+			return domain.Decision{}, err
+		}
 	}
 	for _, alternative := range input.Alternatives {
 		if strings.TrimSpace(alternative.Title) == "" {
@@ -154,6 +235,17 @@ func insertEvidence(ctx context.Context, tx pgx.Tx, actorID, decisionID uuid.UUI
 		KnownAt: input.KnownAt.UTC(), CapturedAt: time.Now().UTC(),
 	}
 	_, err := tx.Exec(ctx, `INSERT INTO decision_evidence(id,decision_id,title,evidence_type,source,content,snapshot,reliability,stance,published_at,known_at,captured_at,added_by) VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)`, item.ID, decisionID, item.Title, item.Type, item.Source, item.Content, item.Snapshot, item.Reliability, item.Stance, item.PublishedAt, item.KnownAt, item.CapturedAt, actorID)
+	if err != nil {
+		return item, err
+	}
+	snapshotContent := item.Snapshot
+	if strings.TrimSpace(snapshotContent) == "" {
+		snapshotContent = item.Content
+	}
+	if strings.TrimSpace(snapshotContent) != "" {
+		hash := fmt.Sprintf("%x", sha256.Sum256([]byte(snapshotContent)))
+		_, err = tx.Exec(ctx, `INSERT INTO evidence_snapshots(id,evidence_id,content,content_hash,captured_at,created_by) VALUES($1,$2,$3,$4,$5,$6)`, uuid.New(), item.ID, snapshotContent, hash, item.CapturedAt, actorID)
+	}
 	return item, err
 }
 
@@ -194,7 +286,19 @@ func (s *Store) Dashboard(ctx context.Context, actor domain.User) (domain.Dashbo
 		return result, err
 	}
 	result.Recent, err = s.ListDecisions(ctx, actor, "", "", 8, 0)
-	return result, err
+	if err != nil {
+		return result, err
+	}
+	queue, err := s.ReviewQueue(ctx, actor, 100)
+	if err != nil {
+		return result, err
+	}
+	result.ReviewDue = len(queue)
+	if len(queue) > 4 {
+		queue = queue[:4]
+	}
+	result.ReviewInbox = queue
+	return result, nil
 }
 
 func (s *Store) GetDecision(ctx context.Context, actor domain.User, id uuid.UUID, replayAt *time.Time) (domain.Decision, error) {
@@ -210,9 +314,22 @@ func (s *Store) GetDecision(ctx context.Context, actor domain.User, id uuid.UUID
 	if replayAt != nil && item.DecidedAt.After(*replayAt) {
 		return domain.Decision{}, ErrNotFound
 	}
+	if replayAt != nil {
+		if err := s.restoreDecisionVersion(ctx, &item, *replayAt); err != nil {
+			return domain.Decision{}, err
+		}
+	}
 	if err := s.loadDecisionChildren(ctx, &item, replayAt); err != nil {
 		return domain.Decision{}, err
 	}
+	if err := s.loadDecisionIntelligence(ctx, &item, replayAt); err != nil {
+		return domain.Decision{}, err
+	}
+	healthAt := time.Now().UTC()
+	if replayAt != nil {
+		healthAt = replayAt.UTC()
+	}
+	item.Health = decisionHealth(item, healthAt)
 	return item, nil
 }
 
@@ -384,9 +501,22 @@ func (s *Store) AddReflection(ctx context.Context, actor domain.User, decisionID
 		return domain.Reflection{}, err
 	}
 	input.ID = uuid.New()
+	input.Reflection = strings.TrimSpace(input.Reflection)
+	input.Learning = strings.TrimSpace(input.Learning)
 	input.CreatedAt = time.Now().UTC()
-	_, err := s.DB.Exec(ctx, `INSERT INTO decision_reflections(id,decision_id,reflection,learning,reasoning_still_sound,created_by,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)`, input.ID, decisionID, input.Reflection, input.Learning, input.ReasoningStillSound, actor.ID, input.CreatedAt)
-	return input, err
+	tx, err := s.DB.Begin(ctx)
+	if err != nil {
+		return input, err
+	}
+	defer func() { _ = tx.Rollback(ctx) }()
+	if _, err := tx.Exec(ctx, `INSERT INTO decision_reflections(id,decision_id,reflection,learning,reasoning_still_sound,created_by,created_at) VALUES($1,$2,$3,$4,$5,$6,$7)`, input.ID, decisionID, input.Reflection, input.Learning, input.ReasoningStillSound, actor.ID, input.CreatedAt); err != nil {
+		return input, err
+	}
+	payload, _ := json.Marshal(map[string]any{"reflectionId": input.ID, "reasoningStillSound": input.ReasoningStillSound})
+	if _, err := tx.Exec(ctx, `INSERT INTO decision_events(id,decision_id,actor_id,event_type,payload,effective_at,known_at) VALUES($1,$2,$3,'reflection.recorded',$4,$5,$5)`, uuid.New(), decisionID, actor.ID, payload, input.CreatedAt); err != nil {
+		return input, err
+	}
+	return input, tx.Commit(ctx)
 }
 
 func defaultString(value, fallback string) string {

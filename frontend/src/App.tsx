@@ -9,6 +9,8 @@ const NewDecisionPage = lazy(() => import('./pages/NewDecisionPage'))
 const DecisionPage = lazy(() => import('./pages/DecisionPage'))
 const ApprovalsPage = lazy(() => import('./pages/ApprovalsPage'))
 const InsightsPage = lazy(() => import('./pages/InsightsPage'))
+const GraphPage = lazy(() => import('./pages/GraphPage'))
+const SearchPage = lazy(() => import('./pages/SearchPage'))
 const PersonalPage = lazy(() => import('./pages/PersonalPage'))
 const AdminPage = lazy(() => import('./pages/AdminPage'))
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'))
@@ -32,6 +34,8 @@ export default function App() {
       <Route path="/decisions/:id" element={<Deferred><DecisionPage /></Deferred>} />
       <Route path="/reviews" element={<Deferred><ApprovalsPage /></Deferred>} />
       <Route path="/insights" element={<Deferred><InsightsPage /></Deferred>} />
+      <Route path="/graph" element={<Deferred><GraphPage /></Deferred>} />
+      <Route path="/search" element={<Deferred><SearchPage /></Deferred>} />
       <Route path="/personal" element={<Deferred><PersonalPage /></Deferred>} />
       <Route path="/admin/*" element={<Deferred><AdminPage /></Deferred>} />
       <Route path="*" element={<Deferred><NotFoundPage /></Deferred>} />

@@ -2,13 +2,12 @@ package store
 
 import (
 	"context"
-	"math"
 
 	"github.com/hkjang/trace/internal/domain"
 )
 
 func (s *Store) Analytics(ctx context.Context, actor domain.User) (domain.Analytics, error) {
-	rows, err := s.DB.Query(ctx, `SELECT d.confidence,(SELECT o.outcome_score FROM decision_outcomes o WHERE o.decision_id=d.id ORDER BY o.outcome_at DESC LIMIT 1),(SELECT o.decision_quality FROM decision_outcomes o WHERE o.decision_id=d.id ORDER BY o.outcome_at DESC LIMIT 1),(SELECT count(*) FROM decision_evidence e WHERE e.decision_id=d.id),EXISTS(SELECT 1 FROM decision_reflections r WHERE r.decision_id=d.id) FROM decisions d WHERE ($2 OR d.owner_id=$1 OR EXISTS(SELECT 1 FROM team_members tm WHERE tm.team_id=d.team_id AND tm.user_id=$1))`, actor.ID, actor.IsAdmin())
+	rows, err := s.DB.Query(ctx, `SELECT COALESCE((SELECT h.confidence FROM decision_confidence_history h WHERE h.decision_id=d.id ORDER BY h.recorded_at,h.created_at LIMIT 1),d.confidence),(SELECT o.outcome_score FROM decision_outcomes o WHERE o.decision_id=d.id ORDER BY o.outcome_at DESC LIMIT 1),(SELECT o.decision_quality FROM decision_outcomes o WHERE o.decision_id=d.id ORDER BY o.outcome_at DESC LIMIT 1),(SELECT count(*) FROM decision_evidence e WHERE e.decision_id=d.id),EXISTS(SELECT 1 FROM decision_reflections r WHERE r.decision_id=d.id) FROM decisions d WHERE ($2 OR d.owner_id=$1 OR EXISTS(SELECT 1 FROM team_members tm WHERE tm.team_id=d.team_id AND tm.user_id=$1))`, actor.ID, actor.IsAdmin())
 	if err != nil {
 		return domain.Analytics{}, err
 	}
@@ -32,7 +31,7 @@ func (s *Store) Analytics(ctx context.Context, actor domain.User) (domain.Analyt
 			reflections++
 		}
 		if outcome != nil {
-			key := int(math.Round(float64(confidence)/10)) * 10
+			key := (confidence / 10) * 10
 			if key > 100 {
 				key = 100
 			}
@@ -68,5 +67,11 @@ func (s *Store) Analytics(ctx context.Context, actor domain.User) (domain.Analyt
 			result.Calibration = append(result.Calibration, domain.CalibrationBucket{Confidence: confidence, Count: item.count, SuccessRate: float64(item.success) / float64(item.count) * 100})
 		}
 	}
-	return result, rows.Err()
+	if err := rows.Err(); err != nil {
+		rows.Close()
+		return result, err
+	}
+	rows.Close()
+	result.Biases, result.Patterns, result.Profile, err = s.PersonalIntelligence(ctx, actor, result)
+	return result, err
 }

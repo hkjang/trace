@@ -43,9 +43,9 @@ flowchart LR
 | :--- | :--- | :--- |
 | **01. Decision** | ![Step 1](images/03_new_decision_step1.png) | 판단 제목, 결론 본문, 카테고리, 결정 시점, 팀 배정 |
 | **02. Why** | ![Step 2](images/04_new_decision_step2.png) | 선택 이유, 숨은 전제(Assumptions), 비선택 대안(Alternatives) |
-| **03. Evidence** | ![Step 3](images/05_new_decision_step3.png) | 근거 제목, 핵심 데이터, You Knew This (`known_at`) 시점 |
+| **03. Evidence** | ![Step 3](images/05_new_decision_step3.png) | 근거 제목, 신뢰도, 지지/중립/반대 방향, You Knew This (`known_at`) 시점 |
 | **04. Expectation** | ![Step 4](images/06_new_decision_step4.png) | 기대하는 미래, 성공 기준, 반증 신호(Invalidation), 검토 시점 |
-| **05. Confidence** | ![Step 5](images/07_new_decision_step5.png) | 0~100% 확신 수준 슬라이더 및 시각화 게이지 |
+| **05. Confidence** | ![Step 5](images/07_new_decision_step5.png) | 0~100% 확신 수준과 새 판단에 개입하는 과거 유사 Decision |
 
 ### 2.4 인터랙티브 디시전 그래프 & 시점 복원 (`/decisions/:id`)
 ![디시전 그래프](images/08_decision_detail_graph.png)
@@ -62,20 +62,36 @@ flowchart LR
 - **근거 추가**: 사후에 새롭게 알게 된 사실을 추가로 시간축에 바인딩
 - **결과 기록 (Outcome)**: 실제 발생한 결과와 판단 품질(Decision Quality) 점수 입력
 - **회고 (Reflection)**: 당시 논리가 타당했는지, 어떤 교훈을 얻었는지 기록
+- **Decision Version**: 본문을 수정할 때 변경 이유와 새 버전을 만들고 이전 상태를 보존
+- **Confidence History**: 확신이 바뀐 값과 이유를 시간축에 기록
+- **Assumption Tracker**: `UNKNOWN → ACTIVE → STRENGTHENED/WEAKENING/BROKEN` 상태 변화 추적
+- **Invalidation Signals**: 사전에 정의한 반증 조건의 발동과 해소 근거 추적
 
-### 2.6 판단 패턴 및 인텔리전스 분석 (`/insights`)
+### 2.6 Decision Network와 Memory (`/graph`, `/search`)
+
+- Focus Graph는 선택한 Decision 주변 1-hop만 먼저 보여주며 사용자가 원할 때 2-hop을 엽니다.
+- 관계는 `DEPENDS_ON`, `CAUSED_BY`, `FOLLOW_UP`, `REPLACES`, `SUPPORTS`, `CONFLICTS_WITH`, `RELATED_TO`를 지원합니다.
+- Zoom에 따라 점 → 제목/상태 → 확신/결과 순으로 정보가 나타나며 날짜와 분류로 Graph를 필터링할 수 있습니다.
+- Memory Search는 자연어 질문으로 Decision, Reason, Evidence, Outcome, Reflection을 검색합니다. AI 연결이 없어도 로컬 검색이 동작합니다.
+- Replay mode에서 `THEN ↔ NOW`를 실행하면 두 시점의 버전·확신·Evidence·전제 차이가 함께 표시됩니다.
+
+### 2.7 판단 패턴 및 인텔리전스 분석 (`/insights`)
 ![인사이트](images/14_insights_analytics.png)
 - **Skill vs Luck vs Mistake 매트릭스**: 좋은 판단+좋은 결과(Skill), 나쁜 판단+좋은 결과(Dumb Luck), 좋은 판단+나쁜 결과(Bad Break), 나쁜 판단+나쁜 결과(Mistake) 분류
 - 평균 확신도, 근거 깊이(Evidence Depth), 회고율 통계
+- 확신 구간별 실제 성공률 Calibration, Category별 Bias Profile, 반복 Pattern, Personal Decision Profile
+- AI Pattern Intelligence는 여러 Decision을 함께 읽되 관찰과 가설을 구분해 스트리밍으로 표시
 
-### 2.7 검토 및 승인 (`/reviews`)
+### 2.8 검토 및 승인 (`/reviews`)
 ![검토함](images/15_approvals_reviews.png)
-- 팀 단위 의사결정에 대한 팀장 검토, 승인, 반려 워크플로우
+- 모든 사용자는 결과/검토일, 높은 확신, 새 Evidence, 위험 전제, 장기 미검토, 반증 발동을 반영한 개인 Review Inbox를 사용합니다.
+- 팀장 승인·반려 영역은 관리자가 승인 workflow를 활성화한 경우에만 별도로 나타납니다.
 
-### 2.8 관리자 콘솔 (`/admin`)
+### 2.9 관리자 콘솔 (`/admin`)
 ![관리자 설정](images/16_admin_settings_rbac.png)
 - 서비스 브랜딩 및 로고
 - Keycloak OIDC SSO 설정
 - OpenAI / 호환 LLM 스트리밍 연동
+- 선택적 Embedding model과 실패 시 오프라인 로컬 Memory fallback
 - Envelope Encryption 암호화 키 관리 및 회전
 - 역할 기반 접근 제어(RBAC)

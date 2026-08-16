@@ -6,6 +6,7 @@ ALTER TABLE decision_links DROP CONSTRAINT IF EXISTS decision_links_pkey;
 ALTER TABLE decision_links ADD COLUMN id uuid;
 ALTER TABLE decision_links ADD COLUMN description text NOT NULL DEFAULT '';
 ALTER TABLE decision_links ADD COLUMN effective_at timestamptz;
+ALTER TABLE decision_links ADD COLUMN deleted_at timestamptz;
 UPDATE decision_links
 SET id = md5(source_decision_id::text || target_decision_id::text || relation_type)::uuid,
     relation_type = CASE relation_type
@@ -25,7 +26,7 @@ ALTER TABLE decision_links ADD PRIMARY KEY (id);
 ALTER TABLE decision_links ADD CONSTRAINT decision_links_relation_type_check
     CHECK (relation_type IN ('DEPENDS_ON','CAUSED_BY','FOLLOW_UP','REPLACES','SUPPORTS','CONFLICTS_WITH','RELATED_TO'));
 CREATE UNIQUE INDEX decision_links_unique_edge_idx
-    ON decision_links(source_decision_id,target_decision_id,relation_type);
+    ON decision_links(source_decision_id,target_decision_id,relation_type) WHERE deleted_at IS NULL;
 CREATE INDEX decision_links_source_time_idx ON decision_links(source_decision_id,effective_at);
 CREATE INDEX decision_links_target_time_idx ON decision_links(target_decision_id,effective_at);
 
@@ -126,6 +127,22 @@ CREATE INDEX invalidation_conditions_review_idx ON invalidation_conditions(decis
 INSERT INTO invalidation_conditions(id,decision_id,condition,status,created_by,known_at,created_at,updated_at)
 SELECT md5(id::text || ':invalidation:1')::uuid,id,invalidation_conditions,'ACTIVE',owner_id,decided_at,created_at,updated_at
 FROM decisions WHERE btrim(invalidation_conditions) <> '';
+
+CREATE TABLE invalidation_events (
+    id uuid PRIMARY KEY,
+    condition_id uuid NOT NULL REFERENCES invalidation_conditions(id) ON DELETE CASCADE,
+    previous_status text,
+    status text NOT NULL CHECK (status IN ('ACTIVE','TRIGGERED','RESOLVED')),
+    note text NOT NULL DEFAULT '',
+    evidence_id uuid REFERENCES decision_evidence(id) ON DELETE SET NULL,
+    changed_by uuid REFERENCES users(id) ON DELETE SET NULL,
+    known_at timestamptz NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE INDEX invalidation_events_replay_idx ON invalidation_events(condition_id,known_at);
+INSERT INTO invalidation_events(id,condition_id,status,note,changed_by,known_at,created_at)
+SELECT md5(id::text || ':event:1')::uuid,id,status,'Initial invalidation condition',created_by,known_at,created_at
+FROM invalidation_conditions;
 
 CREATE TABLE evidence_snapshots (
     id uuid PRIMARY KEY,

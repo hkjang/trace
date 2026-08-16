@@ -1,11 +1,13 @@
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu'
-import { BrainCircuit, CheckSquare2, ChevronDown, Clock3, KeyRound, LayoutDashboard, LogOut, Menu, Plus, Settings2, UserRound, X } from 'lucide-react'
+import { BrainCircuit, CheckSquare2, ChevronDown, Clock3, KeyRound, LayoutDashboard, LogOut, Menu, Network, Plus, Search, Settings2, UserRound, X } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../lib/auth'
 
 const nav = [
   { to: '/', label: '시간의 흐름', icon: LayoutDashboard, end: true },
+  { to: '/graph', label: 'Decision Network', icon: Network },
+  { to: '/search', label: '기억 검색', icon: Search },
   { to: '/reviews', label: '검토함', icon: CheckSquare2 },
   { to: '/insights', label: '판단 패턴', icon: BrainCircuit },
 ]

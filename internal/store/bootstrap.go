@@ -106,7 +106,7 @@ func (s *Store) Bootstrap(ctx context.Context, identity, password string) error 
 	}{
 		{"branding", `{"serviceName":"Trace","tagline":"Remember why you decided."}`},
 		{"oidc", `{"enabled":false,"issuerUrl":"","clientId":"","scopes":"openid profile email","usernameClaim":"preferred_username","emailClaim":"email","displayClaim":"name","autoProvision":true,"baseUrl":""}`},
-		{"ai", `{"enabled":false,"providerName":"OpenAI compatible","baseUrl":"https://api.openai.com/v1","protocol":"responses","model":"","maxOutputTokens":4096,"contextWindow":262144,"requestTimeoutSec":300,"systemPrompt":"AI clarifies the user's thinking; it does not replace it."}`},
+		{"ai", `{"enabled":false,"providerName":"OpenAI compatible","baseUrl":"https://api.openai.com/v1","protocol":"responses","model":"","embeddingModel":"","maxOutputTokens":4096,"contextWindow":262144,"requestTimeoutSec":300,"systemPrompt":"AI clarifies the user's thinking; it does not replace it."}`},
 		{"workflow", `{"approvalRequired":false,"requireTeamManager":true}`},
 		{"security", `{"sessionHours":12,"allowLocalLogin":true}`},
 	}

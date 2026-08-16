@@ -27,8 +27,12 @@
 
 - **결정 당시 앎의 시점(`known_at`) 보존**: 문서 발행일이 아닌 '내가 이 정보를 알게 된 시점'을 기준으로 근거(Evidence) 바인딩
 - **Decision Replay (과거 시점 복원)**: 사후 확증 편향(Hindsight Bias)을 방지하기 위해 미래에 발생한 결과/증거를 수학적으로 제거하고 당시 시각으로 롤백
-- **인터랙티브 디시전 그래프**: React Flow 기반으로 `Decision → Evidence → Alternatives → Expectation → Outcome` 관계망 직관화
+- **Versioned Replay Compare**: Decision·확신·전제·반증 조건의 상태를 임의의 두 시점에서 복원해 `THEN ↔ NOW` 비교
+- **Decision Network**: 7종 관계, 1/2-hop Focus Graph, Semantic Zoom, 날짜·분류 필터로 여러 판단을 연결해 탐색
+- **Semantic Decision Memory**: 새 판단 작성 중 과거 유사 판단을 제안하고 자연어로 Reason·Evidence·Outcome·Reflection 검색. AI 연결 없이도 로컬 벡터로 동작
+- **Assumption & Review Engine**: 전제 약화/붕괴, 반증 조건, 새 근거, 확신과 검토 시점을 설명 가능한 우선순위로 계산
 - **Skill vs Luck 판단 매트릭스**: 좋은 판단과 좋은 결과를 독립적으로 교차 분석하여 조직의 의사결정 역량을 자산화
+- **Pattern Intelligence**: Calibration, Category별 Bias Profile, 반복 패턴과 개인 Decision Profile 분석
 - **Zero-Trust & Envelope Encryption**: 사용자별 AES-256-GCM 봉투 암호화, Keycloak OIDC SSO, 무중단 키 회전
 - **AI Streaming Co-Pilot & Streamable HTTP MCP**: 과거 시점 컨텍스트 기반 LLM 객관성 검토 및 `/mcp` 엔드포인트 지원
 

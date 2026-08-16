@@ -1,8 +1,8 @@
 openapi: 3.1.0
 info:
   title: Trace API
-  version: 0.1.1
-  description: Decision memory, replay, administration, key, and AI streaming API.
+  version: 0.2.0
+  description: Temporal decision intelligence, semantic memory, administration, key, MCP, and AI streaming API.
 servers:
   - url: /
 security:
@@ -44,6 +44,36 @@ paths:
       operationId: calibration
       responses:
         "200": { description: Confidence calibration and decision matrix }
+  /api/v1/analytics/biases:
+    get:
+      operationId: biasProfile
+      responses: { "200": { description: Repeated bias signals grouped by category } }
+  /api/v1/analytics/patterns:
+    get:
+      operationId: patternIntelligence
+      responses: { "200": { description: Cross-decision structural patterns } }
+  /api/v1/analytics/profile:
+    get:
+      operationId: decisionProfile
+      responses: { "200": { description: Personal decision style derived from recorded data } }
+  /api/v1/reviews:
+    get:
+      operationId: reviewQueue
+      parameters: [ { name: limit, in: query, schema: { type: integer, maximum: 100 } } ]
+      responses: { "200": { description: Prioritized decision review inbox } }
+  /api/v1/graph:
+    get:
+      operationId: decisionGraph
+      parameters:
+        - { name: category, in: query, schema: { type: string } }
+        - { name: at, in: query, schema: { type: string, format: date-time } }
+        - { name: limit, in: query, schema: { type: integer, maximum: 500 } }
+      responses: { "200": { description: Visible decision network } }
+  /api/v1/search/semantic:
+    post:
+      operationId: semanticSearch
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/SemanticSearchInput" } } } }
+      responses: { "200": { description: Context-ranked decisions using the configured embedding provider or offline vectors } }
   /api/v1/decisions:
     get:
       operationId: listDecisions
@@ -78,6 +108,77 @@ paths:
         - { name: at, in: query, required: true, schema: { type: string, format: date-time } }
       responses:
         "200": { description: Point-in-time filtered decision }
+  /api/v1/decisions/{id}/replay/compare:
+    get:
+      operationId: compareReplay
+      parameters:
+        - { $ref: "#/components/parameters/DecisionId" }
+        - { name: from, in: query, required: true, schema: { type: string, format: date-time } }
+        - { name: to, in: query, required: true, schema: { type: string, format: date-time } }
+      responses: { "200": { description: Exact decision state and change summary for two timestamps } }
+  /api/v1/decisions/{id}/versions:
+    get:
+      operationId: decisionVersions
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "200": { description: Immutable decision version history } }
+  /api/v1/decisions/{id}/confidence:
+    post:
+      operationId: recordConfidence
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Confidence change recorded with reason } }
+  /api/v1/decisions/{id}/confidence/history:
+    get:
+      operationId: confidenceHistory
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "200": { description: Temporal confidence history } }
+  /api/v1/decisions/{id}/assumptions:
+    post:
+      operationId: addAssumption
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Assumption added } }
+  /api/v1/assumptions/{id}:
+    patch:
+      operationId: updateAssumption
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      responses: { "200": { description: Assumption status transition recorded } }
+  /api/v1/decisions/{id}/invalidation-conditions:
+    post:
+      operationId: addInvalidationCondition
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Invalidation signal added } }
+  /api/v1/invalidation-conditions/{id}:
+    patch:
+      operationId: updateInvalidationCondition
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      responses: { "200": { description: Invalidation status transition recorded } }
+  /api/v1/decisions/{id}/links:
+    post:
+      operationId: linkDecisions
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Temporal relation created } }
+  /api/v1/decision-links/{id}:
+    delete:
+      operationId: unlinkDecisions
+      parameters: [ { name: id, in: path, required: true, schema: { type: string, format: uuid } } ]
+      responses: { "204": { description: Relation hidden from the current graph and retained for replay } }
+  /api/v1/decisions/{id}/graph:
+    get:
+      operationId: focusDecisionGraph
+      parameters:
+        - { $ref: "#/components/parameters/DecisionId" }
+        - { name: depth, in: query, schema: { type: integer, minimum: 1, maximum: 2 } }
+        - { name: at, in: query, schema: { type: string, format: date-time } }
+      responses: { "200": { description: One or two hop focus graph } }
+  /api/v1/decisions/{id}/similar:
+    get:
+      operationId: similarDecisions
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "200": { description: Context-ranked similar past decisions } }
+  /api/v1/decisions/{id}/review:
+    post:
+      operationId: reviewDecision
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Review completed and next review optionally scheduled } }
   /api/v1/decisions/{id}/evidence:
     post:
       operationId: addEvidence
@@ -99,6 +200,15 @@ paths:
       parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
       responses:
         "200": { description: SSE meta/delta/done events, content: { text/event-stream: {} } }
+  /api/v1/decisions/{id}/challenge:
+    post:
+      operationId: challengeDecision
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "200": { description: SSE devil's advocate analysis, content: { text/event-stream: {} } } }
+  /api/v1/ai/patterns/stream:
+    post:
+      operationId: streamPatternAnalysis
+      responses: { "200": { description: SSE cross-decision pattern analysis, content: { text/event-stream: {} } } }
   /api/v1/decisions/{id}/approval:
     post:
       operationId: submitApproval
@@ -170,3 +280,12 @@ components:
             status: { type: string }
             workflowState: { type: string }
             version: { type: integer }
+            health: { type: string, enum: [HEALTHY, WATCH, NEEDS_REVIEW, CRITICAL] }
+    SemanticSearchInput:
+      type: object
+      required: [query]
+      properties:
+        query: { type: string, minLength: 1 }
+        category: { type: string }
+        limit: { type: integer, minimum: 1, maximum: 30 }
+        decisionId: { type: string, format: uuid }

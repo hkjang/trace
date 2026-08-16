@@ -7,11 +7,11 @@ GitHub Release에는 Trace 서비스 Docker 이미지 하나를 담은 `trace-v�
 ## 2. 폐쇄망으로 반입하고 이미지 적재
 
 ```bash
-gzip -dc trace-v0.1.1.tar.gz | docker image load
-docker image inspect trace:v0.1.1
+gzip -dc trace-v0.2.0.tar.gz | docker image load
+docker image inspect trace:v0.2.0
 ```
 
-이미지 이름은 `trace:v0.1.1`, 파일 이름은 `trace-v0.1.1.tar.gz`입니다.
+이미지 이름은 `trace:v0.2.0`, 파일 이름은 `trace-v0.2.0.tar.gz`입니다.
 
 ## 3. 네 개의 환경변수 준비
 
@@ -60,6 +60,8 @@ Trace는 OIDC Discovery, authorization code flow, PKCE S256, state/nonce 검증�
 관리자 → AI 연동에서 내부 AI gateway 또는 외부 OpenAI endpoint를 설정합니다. 폐쇄망에서는 `Base URL`을 망 내부 OpenAI 호환 endpoint로 지정합니다. API key는 데이터베이스에 AES-256-GCM으로 암호화되며 환경변수로 받지 않습니다.
 
 Responses 프로토콜은 `/responses`, Chat Completions 호환 프로토콜은 `/chat/completions`에 연결합니다. 모든 호출은 기본 SSE 스트리밍이고 최대 출력/컨텍스트 설정은 각각 262,144를 넘을 수 없습니다.
+
+Memory Search는 별도 설정 없이 `trace-local-v1` 로컬 벡터로 동작합니다. 내부/외부 embedding API를 사용할 때만 관리자 화면의 Embedding model을 채우십시오. Trace는 같은 Base URL의 `/embeddings`에 batch 요청을 보내며 오류나 연결 단절이 발생하면 자동으로 로컬 검색으로 돌아갑니다. 따라서 폐쇄망 설치에서 embedding provider는 필수 구성요소가 아닙니다.
 
 ## 7. 백업과 복구
 

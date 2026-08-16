@@ -1,0 +1,10 @@
+extends:
+  - recommended
+
+# This is an authenticated internal API contract. Operation IDs and response
+# descriptions are authoritative; marketing summaries, licensing metadata, and
+# a repeated 4xx stanza on every operation are intentionally not required.
+rules:
+  operation-summary: off
+  operation-4xx-response: off
+  info-license: off

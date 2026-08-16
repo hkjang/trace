@@ -125,6 +125,7 @@ func (s *Store) GetAISettings(ctx context.Context, includeSecret bool) (domain.A
 func (s *Store) SaveAISettings(ctx context.Context, actor uuid.UUID, settings domain.AISettings) error {
 	settings.BaseURL = strings.TrimRight(strings.TrimSpace(settings.BaseURL), "/")
 	settings.Model = strings.TrimSpace(settings.Model)
+	settings.EmbeddingModel = strings.TrimSpace(settings.EmbeddingModel)
 	if settings.Protocol != "responses" && settings.Protocol != "chat_completions" {
 		return fmt.Errorf("%w: protocol must be responses or chat_completions", ErrValidation)
 	}

@@ -19,7 +19,7 @@ import (
 	"github.com/hkjang/trace/internal/store"
 )
 
-const aiPromptVersion = "trace-ai-v1"
+const aiPromptVersion = "trace-ai-v2"
 
 type aiStreamInput struct {
 	Mode            string     `json:"mode"`
@@ -39,9 +39,13 @@ func (s *Server) handleAIStream(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if input.Mode == "" {
-		input.Mode = "review"
+		if strings.HasSuffix(r.URL.Path, "/challenge") {
+			input.Mode = "counter"
+		} else {
+			input.Mode = "review"
+		}
 	}
-	allowed := map[string]bool{"review": true, "counter": true, "replay": true, "clarify": true}
+	allowed := map[string]bool{"review": true, "counter": true, "counterfactual": true, "assumption": true, "replay": true, "clarify": true}
 	if !allowed[input.Mode] {
 		writeError(w, store.ErrValidation)
 		return
@@ -88,6 +92,11 @@ func (s *Server) handleAIStream(w http.ResponseWriter, r *http.Request) {
 	}
 	sum := sha256.Sum256(contextBytes)
 	snapshotHash := hex.EncodeToString(sum[:])
+	runID, err := s.Store.StartAnalysisRun(r.Context(), userFrom(r).ID, &decisionID, input.Mode, settings.Model, aiPromptVersion, fmt.Sprintf("decision-v%d", decision.Version), snapshotHash, replayAt)
+	if err != nil {
+		writeError(w, err)
+		return
+	}
 	prompt := buildAIPrompt(settings, input, contextBytes)
 	upstreamBody := map[string]any{"model": settings.Model, "stream": true}
 	endpoint := settings.BaseURL + "/responses"
@@ -106,6 +115,7 @@ func (s *Server) handleAIStream(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 	request, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(rawBody))
 	if err != nil {
+		_ = s.Store.FailAnalysisRun(context.WithoutCancel(r.Context()), runID, err.Error())
 		writeError(w, err)
 		return
 	}
@@ -117,6 +127,7 @@ func (s *Server) handleAIStream(w http.ResponseWriter, r *http.Request) {
 	client := &http.Client{Timeout: timeout}
 	response, err := client.Do(request)
 	if err != nil {
+		_ = s.Store.FailAnalysisRun(context.WithoutCancel(r.Context()), runID, err.Error())
 		writeJSON(w, http.StatusBadGateway, map[string]any{"error": map[string]string{"code": "ai_unavailable", "message": "AI 제공자에 연결할 수 없습니다."}})
 		return
 	}
@@ -124,11 +135,13 @@ func (s *Server) handleAIStream(w http.ResponseWriter, r *http.Request) {
 	if response.StatusCode < 200 || response.StatusCode >= 300 {
 		detail, _ := io.ReadAll(io.LimitReader(response.Body, 8192))
 		s.Logger.Error("AI upstream rejected request", "status", response.Status, "detail", string(detail))
+		_ = s.Store.FailAnalysisRun(context.WithoutCancel(r.Context()), runID, "upstream rejected request")
 		writeJSON(w, http.StatusBadGateway, map[string]any{"error": map[string]string{"code": "ai_upstream_error", "message": "AI 제공자가 요청을 거부했습니다."}})
 		return
 	}
 	flusher, ok := w.(http.Flusher)
 	if !ok {
+		_ = s.Store.FailAnalysisRun(context.WithoutCancel(r.Context()), runID, "streaming unsupported")
 		writeError(w, errorsNew("streaming unsupported"))
 		return
 	}
@@ -164,6 +177,7 @@ func (s *Server) handleAIStream(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if err := reader.Err(); err != nil {
+		_ = s.Store.FailAnalysisRun(context.WithoutCancel(r.Context()), runID, err.Error())
 		sendSSE(w, "error", map[string]string{"message": "AI 스트림이 중단되었습니다."})
 		flusher.Flush()
 		return
@@ -173,12 +187,25 @@ func (s *Server) handleAIStream(w http.ResponseWriter, r *http.Request) {
 	if saveErr != nil {
 		s.Logger.Error("save AI insight", "error", saveErr)
 	}
-	sendSSE(w, "done", map[string]any{"insightId": insight.ID, "inputSnapshotHash": snapshotHash})
+	_ = s.Store.CompleteAnalysisRun(context.WithoutCancel(r.Context()), runID, map[string]any{"text": content, "insightId": insight.ID})
+	if input.Mode == "review" || input.Mode == "replay" {
+		if scoreErr := s.Store.EstimateAndSaveDecisionScore(context.WithoutCancel(r.Context()), decision, &runID); scoreErr != nil {
+			s.Logger.Warn("save decision score", "error", scoreErr)
+		}
+	}
+	sendSSE(w, "done", map[string]any{"insightId": insight.ID, "analysisRunId": runID, "inputSnapshotHash": snapshotHash})
 	flusher.Flush()
 }
 
 func buildAIPrompt(settings domain.AISettings, input aiStreamInput, contextBytes []byte) string {
-	instruction := map[string]string{"review": "Evaluate decision quality separately from outcome quality. Identify evidence gaps, assumptions, risks, alternatives, calibration, and possible biases.", "counter": "Construct the strongest evidence-based counterargument and specific disconfirming signals.", "replay": "Evaluate only the supplied point-in-time context. Never infer or mention facts after replayAt.", "clarify": "Clarify and structure the user's thinking without making the decision for them."}[input.Mode]
+	instruction := map[string]string{
+		"review":         "Evaluate decision quality separately from outcome quality. Explain AI-estimated scores for Evidence Quality, Logic, Alternative Consideration, Risk Awareness, Assumption Quality, Calibration, and Counter Evidence. Identify possible biases without treating scores as objective truth.",
+		"counter":        "Act as a rigorous devil's advocate. Construct the strongest evidence-based counterargument and list the specific evidence needed to resolve it.",
+		"counterfactual": "Analyze the named alternative as a scenario, separating advantages, disadvantages, and unknowns. Do not claim to predict what certainly would have happened.",
+		"assumption":     "Evaluate which assumptions are strengthened, weakening, or broken by the supplied evidence and explain why.",
+		"replay":         "Evaluate only the supplied point-in-time context. Never infer or mention facts after replayAt. Contrast decision quality from outcome quality.",
+		"clarify":        "Clarify and structure the user's thinking without making the decision for them.",
+	}[input.Mode]
 	return fmt.Sprintf("Task: %s\nUser request: %s\nDecision context (future data has already been removed when replaying):\n%s", instruction, input.Prompt, string(contextBytes))
 }
 func extractDelta(data []byte, protocol string) (string, bool) {
