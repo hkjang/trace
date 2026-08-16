@@ -60,7 +60,7 @@ export ENCRYPTION_KEY="$(openssl rand -base64 32)"
 로컬 릴리스 이미지는 다음 명령으로 만듭니다.
 
 ```bash
-./scripts/release-image.sh v0.1.0
+sh ./scripts/release-image.sh v0.1.0
 ```
 
 산출물은 이미지 `trace:v0.1.0`, 파일 `dist/trace-v0.1.0.tar.gz`입니다. `v*` 태그를 `https://github.com/hkjang/trace`에 push하면 GitHub Actions가 동일한 이름으로 이미지만 압축해 Release에 첨부합니다.

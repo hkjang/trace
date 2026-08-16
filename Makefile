@@ -20,4 +20,4 @@ image:
 	docker build --build-arg VERSION=$(VERSION) --build-arg COMMIT=$(COMMIT) --build-arg BUILD_TIME=$(BUILD_TIME) -t trace:v$(VERSION) .
 
 release-image:
-	./scripts/release-image.sh v$(VERSION)
+	sh ./scripts/release-image.sh v$(VERSION)
