@@ -2,15 +2,122 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trace — Remember why you decided. | Decision Intelligence Platform</title>
-  <meta name="description" content="Trace는 결정 당시 알고 있던 정보와 나중에 확인된 결과를 분리해 기록하고, 과거 시점으로 돌아가 판단 품질을 다시 보는 엔터프라이즈 Decision Intelligence 서비스입니다.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
   
-  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <!-- Primary SEO Meta Tags -->
+  <title>Trace — Remember why you decided. | Decision Intelligence Platform</title>
+  <meta name="title" content="Trace — Remember why you decided. | Decision Intelligence Platform">
+  <meta name="description" content="Trace는 결정 당시 알고 있던 정보와 나중에 확인된 결과를 분리해 기록하고, 과거 시점으로 돌아가 판단 품질을 다시 보는 엔터프라이즈 Decision Intelligence 플랫폼입니다.">
+  <meta name="keywords" content="Trace, Decision Intelligence, Outcome Bias, Hindsight Bias, Time Travel Replay, Envelope Encryption, AES-256-GCM, Calibration Analytics, Brier Score, Keycloak OIDC, Go Monolith, Enterprise Governance">
+  <meta name="author" content="Trace Contributors">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="theme-color" content="#080c14">
+  <link rel="canonical" href="https://hkjang.github.io/trace/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://hkjang.github.io/trace/">
+  <meta property="og:site_name" content="Trace">
+  <meta property="og:title" content="Trace — Remember why you decided.">
+  <meta property="og:description" content="결과 편향을 배제하고 당시의 판단 품질을 보존하는 엔터프라이즈 Decision Intelligence 플랫폼.">
+  <meta property="og:image" content="https://hkjang.github.io/trace/images/02_home_dashboard.png">
+  <meta property="og:image:width" content="1440">
+  <meta property="og:image:height" content="900">
+  <meta property="og:locale" content="ko_KR">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://hkjang.github.io/trace/">
+  <meta name="twitter:title" content="Trace — Remember why you decided.">
+  <meta name="twitter:description" content="결정 당시의 전제와 사후 결과를 분리 기록하고 시점별 타임 트래블 리플레이를 지원하는 의사결정 인텔리전스.">
+  <meta name="twitter:image" content="https://hkjang.github.io/trace/images/02_home_dashboard.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- AEO & GEO Schema.org JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": "https://hkjang.github.io/trace/#software",
+        "name": "Trace",
+        "alternateName": "Trace Decision Intelligence Platform",
+        "description": "결과 편향(Outcome Bias)을 배제하고 결정 당시의 전제와 사후 결과를 시간축으로 완벽히 분리 보존하는 엔터프라이즈 의사결정 인텔리전스 서비스",
+        "operatingSystem": "Cross-platform (Docker, Linux, macOS, Windows)",
+        "applicationCategory": "BusinessApplication / DecisionIntelligence",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "featureList": [
+          "5-Step Decision Structuring Framework",
+          "Point-in-Time Knowledge Isolation & Time Travel Replay",
+          "Per-User AES-256-GCM Envelope Encryption & Zero-Downtime Key Rotation",
+          "Calibration Curve & Brier Score Predictive Analytics",
+          "Enterprise Team Approvals Governance & Immutable Audit Logs",
+          "Air-Gapped Offline Single Go Executable Distribution"
+        ],
+        "screenshot": "https://hkjang.github.io/trace/images/02_home_dashboard.png",
+        "softwareVersion": "v1.3.0",
+        "license": "https://www.apache.org/licenses/LICENSE-2.0"
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://hkjang.github.io/trace/#organization",
+        "name": "Trace Open Source Project",
+        "url": "https://github.com/hkjang/trace",
+        "logo": "https://hkjang.github.io/trace/favicon.svg"
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://hkjang.github.io/trace/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Trace는 어떤 문제를 해결하는 Decision Intelligence 서비스인가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Trace는 의사결정 당시 알고 있던 정보(전제, 기각된 대안, 기대 확률)와 사후에 드러난 결과를 시간축으로 완벽히 분리 기록합니다. 이를 통해 사후 확신 편향(Hindsight Bias)과 결과 편향(Outcome Bias)을 원천 차단하고 당시 판단 프로세스의 본질적인 품질을 재평가할 수 있도록 돕습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "타임 트래블 리플레이(Time Travel Replay) 기능은 어떻게 동작하나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "의사결정 상세 화면에서 타임라인 슬라이더를 과거 특정 시점으로 되돌리면, 그 이후에 기록된 모든 사후 정보(실제 결과, 회고, 중간 노이즈)가 화면에서 완벽히 마스킹됩니다. 이를 통해 평가자는 당시 결정자가 직면했던 불확실성과 판단 맥락을 100% 동일한 시각에서 복기할 수 있습니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "5단계 의사결정 구조화 프레임워크란 무엇인가요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Step 1(Decision 선언) -> Step 2(Why & Hidden Assumptions 논리 및 전제) -> Step 3(Probabilities 기대 확률 베팅) -> Step 4(Milestones 재평가 마일스톤 및 반증 기준) -> Step 5(Review & Lock 암호화 서명 잠금)으로 이어지는 체계적 의사결정 사고 프레임워크입니다."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "엔터프라이즈 봉투 암호화(Envelope Encryption)와 보안은 어떻게 보장되나요?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "조직 마스터 키로 래핑된 사용자별 고유 AES-256-GCM 데이터 키(DEK)를 사용하여 모든 의사결정 논리와 전제, 회고 내용을 격리 암호화합니다. 단일 트랜잭션 기반의 무중단 키 회전(Zero-Downtime Key Rotation)과 Keycloak OIDC SSO, 불변 감사 로그를 기본 제공합니다."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
 
   <style>
     :root {
@@ -39,12 +146,15 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--bg-dark);
       color: var(--text-main);
       line-height: 1.6;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
     }
 
     .ambient-glow {
@@ -52,75 +162,73 @@
       top: -20%;
       left: 50%;
       transform: translateX(-50%);
-      width: 1000px;
+      width: 100vw;
+      max-width: 1000px;
       height: 600px;
       background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(168, 85, 247, 0.08) 40%, transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
+    /* Streamlined Minimal Header */
     header.site-header {
       position: sticky;
       top: 0;
       z-index: 100;
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      background: rgba(8, 12, 20, 0.8);
+      background: rgba(8, 12, 20, 0.92);
       border-bottom: 1px solid var(--border-color);
-      padding: 0 2rem;
+      padding: 0 1.25rem;
     }
     .header-inner {
-      max-width: 1280px;
+      max-width: 1180px;
       margin: 0 auto;
-      height: 72px;
+      height: 60px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
     }
     .brand-logo {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       text-decoration: none;
       color: #fff;
+      flex-shrink: 0;
     }
     .brand-icon {
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       background: var(--gradient-brand);
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 800;
-      font-size: 20px;
+      font-size: 18px;
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
     }
     .brand-title {
-      font-size: 1.25rem;
-      font-weight: 700;
-      letter-spacing: 0.05em;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
     }
-    .brand-tagline {
-      font-size: 0.8rem;
-      color: var(--text-dim);
-      font-weight: 400;
-      margin-left: 6px;
-      display: none;
-    }
-    @media (min-width: 768px) { .brand-tagline { display: inline-block; } }
 
+    /* Simple Clean Navigation */
     nav.nav-links {
-      display: none;
+      display: flex;
       align-items: center;
-      gap: 28px;
+      gap: 18px;
+      padding: 0;
     }
-    @media (min-width: 900px) { nav.nav-links { display: flex; } }
     nav.nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-size: 0.95rem;
+      font-size: 0.86rem;
       font-weight: 500;
+      white-space: nowrap;
       transition: color 0.2s ease;
     }
     nav.nav-links a:hover { color: #fff; }
@@ -128,51 +236,56 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+      flex-shrink: 0;
     }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 10px 20px;
+      gap: 6px;
+      padding: 7px 14px;
       border-radius: var(--radius-sm);
-      font-size: 0.92rem;
+      font-size: 0.82rem;
       font-weight: 600;
       text-decoration: none;
-      cursor: pointer;
       transition: all 0.2s ease;
+      cursor: pointer;
       border: 1px solid transparent;
+      min-height: 34px;
+      white-space: nowrap;
     }
     .btn-primary {
       background: var(--gradient-brand);
       color: #fff;
-      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
     }
     .btn-primary:hover {
-      transform: translateY(-1px);
       box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+      transform: translateY(-1px);
     }
     .btn-secondary {
       background: rgba(255, 255, 255, 0.05);
-      border-color: var(--border-color);
       color: var(--text-main);
+      border-color: var(--border-color);
     }
     .btn-secondary:hover {
       background: rgba(255, 255, 255, 0.1);
-      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
     }
 
+    /* Container */
     .container {
-      max-width: 1280px;
+      max-width: 1180px;
       margin: 0 auto;
-      padding: 0 2rem;
+      padding: 0 1.25rem;
       position: relative;
       z-index: 1;
     }
 
+    /* Hero Section */
     section.hero {
-      padding: 5rem 0 4rem;
+      padding: 4rem 0 3rem;
       text-align: center;
     }
     .hero-badge {
@@ -180,250 +293,179 @@
       align-items: center;
       gap: 8px;
       padding: 6px 16px;
-      border-radius: 999px;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 9999px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
       color: #a5b4fc;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
+      margin-bottom: 1.25rem;
     }
-    .hero-badge span.pulse-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent-emerald);
-      box-shadow: 0 0 8px var(--accent-emerald);
-    }
-    h1.hero-headline {
-      font-size: clamp(2.4rem, 5vw, 4.2rem);
+    .hero-headline {
+      font-size: clamp(2rem, 5vw, 3.8rem);
       font-weight: 800;
-      line-height: 1.15;
       letter-spacing: -0.03em;
-      margin-bottom: 1.5rem;
+      line-height: 1.15;
+      margin-bottom: 1.2rem;
     }
-    h1.hero-headline em {
+    .hero-headline em {
       font-style: normal;
       background: var(--gradient-brand);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    p.hero-subhead {
-      max-width: 760px;
-      margin: 0 auto 2.5rem;
-      font-size: clamp(1.05rem, 1.8vw, 1.25rem);
+    .hero-subhead {
+      font-size: clamp(0.92rem, 2vw, 1.15rem);
       color: var(--text-muted);
-      font-weight: 400;
-      line-height: 1.7;
+      max-width: 720px;
+      margin: 0 auto 2rem;
+      line-height: 1.65;
     }
     .hero-ctas {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 16px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 3.5rem;
+      margin-bottom: 3rem;
     }
 
-    .video-showcase-wrap {
-      margin-top: 2rem;
+    /* Hero Showcase & Video */
+    .hero-showcase {
+      max-width: 1080px;
+      margin: 0 auto;
       border-radius: var(--radius-lg);
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid var(--border-color);
       background: var(--bg-card);
+      box-shadow: var(--shadow-glow);
       overflow: hidden;
-      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), var(--shadow-glow);
     }
     .showcase-bar {
-      height: 42px;
-      background: #090e1a;
+      height: 38px;
+      background: #0a0e1a;
       border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
-      padding: 0 16px;
+      padding: 0 14px;
       gap: 8px;
     }
-    .dot { width: 11px; height: 11px; border-radius: 50%; }
-    .dot-red { background: #ef4444; }
-    .dot-yellow { background: #f59e0b; }
-    .dot-green { background: #10b981; }
+    .dot { width: 9px; height: 9px; border-radius: 50%; }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
     .showcase-url {
-      margin-left: 12px;
-      padding: 4px 16px;
-      border-radius: 6px;
-      background: rgba(255, 255, 255, 0.05);
-      color: var(--text-dim);
+      margin-left: auto;
+      margin-right: auto;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80%;
     }
-    .video-container {
-      position: relative;
-      width: 100%;
-      background: #000;
-      line-height: 0;
-    }
-    .video-container video {
-      width: 100%;
-      height: auto;
-      max-height: 720px;
-      display: block;
-      outline: none;
-    }
-
-    section.matrix-section {
-      padding: 6rem 0;
-      border-top: 1px solid var(--border-color);
-    }
-    .section-head {
-      text-align: center;
-      margin-bottom: 3.5rem;
-    }
-    .section-head p.eyebrow {
-      color: var(--accent-indigo);
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-    .section-head h2 {
-      font-size: clamp(1.8rem, 3vw, 2.6rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-    .matrix-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
-    }
-    .matrix-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 24px;
-      transition: transform 0.2s ease, border-color 0.2s ease;
+    .hero-img-wrap {
       position: relative;
       overflow: hidden;
     }
-    .matrix-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-focus);
+    .hero-img-wrap img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.4s ease;
+      cursor: pointer;
     }
-    .matrix-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 6px;
-      font-size: 0.75rem;
+
+    /* Section Heads */
+    .section-head {
+      text-align: center;
+      max-width: 720px;
+      margin: 0 auto 2.5rem;
+    }
+    .eyebrow {
+      color: var(--accent-indigo);
       font-weight: 700;
-      letter-spacing: 0.05em;
+      font-size: 0.78rem;
       text-transform: uppercase;
-      margin-bottom: 1rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 6px;
     }
-    .matrix-card.skill .matrix-badge { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .matrix-card.badbreak .matrix-badge { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
-    .matrix-card.dumbluck .matrix-badge { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-    .matrix-card.mistake .matrix-badge { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
-    .matrix-card h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
+    .section-head h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.25;
     }
-    .matrix-card p {
-      color: var(--text-muted);
+    .section-desc {
+      color: var(--text-dim);
       font-size: 0.92rem;
+      margin-top: 8px;
+    }
+
+    /* Pillars Grid */
+    section.pillars-section {
+      padding: 4.5rem 0;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      transition: all 0.25s ease;
+    }
+    .feature-card:hover {
+      border-color: var(--border-focus);
+      background: var(--bg-card-hover);
+      transform: translateY(-3px);
+    }
+    .feature-icon {
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+    .feature-card h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .feature-card p {
+      color: var(--text-muted);
+      font-size: 0.86rem;
       line-height: 1.6;
     }
 
-    section.features-section {
-      padding: 6rem 0;
-      background: linear-gradient(180deg, transparent 0%, rgba(14, 21, 38, 0.4) 100%);
-    }
-    .feature-item {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 3rem;
-      align-items: center;
-      margin-bottom: 6rem;
-    }
-    @media (min-width: 960px) {
-      .feature-item { grid-template-columns: 1fr 1.2fr; }
-      .feature-item.reverse { grid-template-columns: 1.2fr 1fr; }
-      .feature-item.reverse .feature-content { order: 2; }
-      .feature-item.reverse .feature-visual { order: 1; }
-    }
-    .feature-content h3 {
-      font-size: clamp(1.5rem, 2.5vw, 2.1rem);
-      font-weight: 700;
-      line-height: 1.25;
-      margin-bottom: 1.2rem;
-    }
-    .feature-content p {
-      color: var(--text-muted);
-      font-size: 1rem;
-      line-height: 1.7;
-      margin-bottom: 1.5rem;
-    }
-    .feature-bullets {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .feature-bullets li {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.92rem;
-      color: #cbd5e1;
-    }
-    .feature-bullets li span.check-icon {
-      color: var(--accent-emerald);
-      font-weight: 700;
-    }
-    .feature-visual {
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-color);
-      background: var(--bg-card);
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-    }
-    .feature-visual img {
-      width: 100%;
-      height: auto;
-      display: block;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
-    .feature-visual img:hover {
-      transform: scale(1.02);
-    }
-
+    /* Gallery Grid */
     section.gallery-section {
-      padding: 6rem 0;
+      padding: 4.5rem 0;
+      background: rgba(14, 21, 38, 0.4);
       border-top: 1px solid var(--border-color);
+      border-bottom: 1px solid var(--border-color);
     }
     .gallery-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 18px;
     }
     .gallery-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
       overflow: hidden;
-      cursor: pointer;
       transition: all 0.25s ease;
+      cursor: pointer;
     }
     .gallery-card:hover {
-      transform: translateY(-5px);
       border-color: var(--border-focus);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4);
     }
     .gallery-thumb {
       width: 100%;
-      height: 210px;
+      height: 180px;
       overflow: hidden;
       background: #000;
     }
@@ -431,80 +473,135 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
-      object-position: top;
       transition: transform 0.3s ease;
     }
     .gallery-card:hover .gallery-thumb img {
       transform: scale(1.05);
     }
     .gallery-info {
-      padding: 16px 20px;
+      padding: 14px 16px;
     }
     .gallery-info h4 {
-      font-size: 1rem;
+      font-size: 0.92rem;
       font-weight: 600;
       margin-bottom: 4px;
     }
     .gallery-info p {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--text-dim);
     }
 
+    /* Enterprise Documentation Grid */
     section.tech-section {
-      padding: 6rem 0;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border-color);
-      border-bottom: 1px solid var(--border-color);
+      padding: 4.5rem 0;
     }
     .tech-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
+      gap: 18px;
     }
     .tech-box {
-      padding: 24px;
+      padding: 22px;
       border-radius: var(--radius-md);
-      background: rgba(8, 12, 20, 0.6);
+      background: rgba(8, 12, 20, 0.7);
       border: 1px solid var(--border-color);
     }
     .tech-box h3 {
-      font-size: 1.15rem;
+      font-size: 1.08rem;
       font-weight: 700;
-      color: #a5b4fc;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-bottom: 10px;
     }
     .tech-box ul {
       list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      font-size: 0.9rem;
-      color: var(--text-muted);
     }
-    .tech-box ul li strong {
-      color: #fff;
+    .tech-box li {
+      position: relative;
+      padding-left: 18px;
+      font-size: 0.86rem;
+      color: var(--text-muted);
+      margin-bottom: 7px;
+      line-height: 1.5;
+    }
+    .tech-box li::before {
+      content: '•';
+      position: absolute;
+      left: 0;
+      color: var(--accent-indigo);
+      font-weight: bold;
     }
 
-    section.quickstart-section {
-      padding: 6rem 0;
-      text-align: center;
+    /* FAQ Section */
+    section.faq-section {
+      padding: 4.5rem 0;
+      background: rgba(14, 21, 38, 0.4);
+      border-top: 1px solid var(--border-color);
     }
-    .code-terminal {
-      max-width: 800px;
-      margin: 2.5rem auto 0;
-      background: #050810;
+    .faq-list {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .faq-item {
+      background: var(--bg-card);
       border: 1px solid var(--border-color);
       border-radius: var(--radius-md);
-      text-align: left;
+      overflow: hidden;
+      transition: border-color 0.2s ease;
+    }
+    .faq-item[open] {
+      border-color: rgba(99, 102, 241, 0.35);
+    }
+    .faq-question {
+      padding: 16px 20px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      list-style: none;
+    }
+    .faq-question::-webkit-details-marker { display: none; }
+    .faq-question::after {
+      content: '+';
+      font-size: 1.2rem;
+      color: var(--accent-indigo);
+      transition: transform 0.2s ease;
+    }
+    .faq-item[open] .faq-question::after {
+      content: '−';
+      transform: rotate(180deg);
+    }
+    .faq-answer {
+      padding: 0 20px 16px 20px;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      line-height: 1.65;
+      border-top: 1px solid rgba(255, 255, 255, 0.04);
+      margin-top: 4px;
+      padding-top: 12px;
+    }
+
+    /* Quick Start Terminal */
+    section.quickstart-section {
+      padding: 4.5rem 0 5.5rem;
+    }
+    .code-terminal {
+      max-width: 860px;
+      margin: 0 auto;
+      background: #050811;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
       overflow: hidden;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
     }
     .terminal-header {
-      background: #0d121f;
-      padding: 12px 18px;
+      background: #0a0e1c;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -512,13 +609,13 @@
     }
     .terminal-title {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.74rem;
       color: var(--text-dim);
     }
     .terminal-body {
-      padding: 24px;
+      padding: 18px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.9rem;
+      font-size: clamp(0.74rem, 1.8vw, 0.85rem);
       line-height: 1.7;
       color: #38bdf8;
       overflow-x: auto;
@@ -526,53 +623,64 @@
     .terminal-body .comment { color: #64748b; }
     .terminal-body .cmd { color: #f1f5f9; }
 
+    /* Modal */
     .modal-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.88);
+      background: rgba(0, 0, 0, 0.92);
       backdrop-filter: blur(10px);
+      z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
-      z-index: 9999;
-      padding: 2rem;
+      padding: 20px;
     }
     .modal-backdrop.active { display: flex; }
     .modal-content {
-      max-width: 95vw;
-      max-height: 90vh;
       position: relative;
+      max-width: 1200px;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
     }
     .modal-content img {
-      max-width: 100%;
-      max-height: 85vh;
-      border-radius: var(--radius-sm);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      width: 100%;
+      height: auto;
+      display: block;
     }
     .modal-close {
       position: absolute;
-      top: -45px;
-      right: 0;
-      background: none;
+      top: 10px;
+      right: 14px;
+      background: rgba(0, 0, 0, 0.6);
       border: none;
       color: #fff;
-      font-size: 32px;
+      font-size: 26px;
       cursor: pointer;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
+    /* Footer */
     footer.site-footer {
       border-top: 1px solid var(--border-color);
-      padding: 4rem 0 3rem;
+      padding: 3.5rem 0 2.5rem;
       text-align: center;
       color: var(--text-dim);
-      font-size: 0.9rem;
+      font-size: 0.82rem;
     }
     .footer-links {
       display: flex;
       justify-content: center;
-      gap: 24px;
-      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 1.25rem;
     }
     .footer-links a {
       color: var(--text-muted);
@@ -580,6 +688,25 @@
       transition: color 0.2s;
     }
     .footer-links a:hover { color: #fff; }
+
+    /* Mobile Responsive Rules */
+    @media (max-width: 768px) {
+      nav.nav-links {
+        display: flex;
+        gap: 12px;
+      }
+      nav.nav-links a {
+        font-size: 0.8rem;
+      }
+      .hero-ctas .btn { width: 100%; }
+      .cards-grid, .gallery-grid, .tech-grid { grid-template-columns: 1fr; }
+      section.hero { padding: 2.5rem 0 1.5rem; }
+    }
+    @media (max-width: 480px) {
+      nav.nav-links {
+        display: none;
+      }
+    }
   </style>
 </head>
 <body>
@@ -589,292 +716,349 @@
   <!-- Header -->
   <header class="site-header">
     <div class="header-inner">
-      <a href="#" class="brand-logo">
-        <img src="assets/logo.svg" alt="Trace" style="width: 36px; height: 36px; filter: drop-shadow(0 2px 8px rgba(59, 130, 246, 0.5));" />
-        <div>
-          <span class="brand-title">TRACE</span>
-          <span class="brand-tagline">Decision Intelligence</span>
-        </div>
+      <a href="#" class="brand-logo" aria-label="Trace Home">
+        <div class="brand-icon">T</div>
+        <span class="brand-title">TRACE</span>
       </a>
-      <nav class="nav-links">
-        <a href="#video-demo">Video Tour</a>
-        <a href="#matrix">Decision Matrix</a>
-        <a href="#features">Features</a>
-        <a href="#gallery">Live Gallery</a>
-        <a href="#specs">Specs & Security</a>
-        <a href="#quickstart">Quick Start</a>
+
+      <!-- Simple Clean Navigation (4 Core Links) -->
+      <nav class="nav-links" aria-label="Main Navigation">
+        <a href="#demo">Demo</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#docs">Docs (PDF)</a>
+        <a href="#faq">FAQ</a>
       </nav>
+
+      <!-- Simple Clean Action -->
       <div class="header-actions">
-        <a href="guide.md" class="btn btn-secondary" target="_blank">Docs Manual ↗</a>
-        <a href="https://github.com/hkjang/trace" class="btn btn-primary" target="_blank">GitHub Repo ★</a>
+        <a href="https://github.com/hkjang/trace" class="btn btn-primary" target="_blank" aria-label="GitHub Repository">
+          GitHub ★
+        </a>
       </div>
     </div>
   </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container">
-      <div class="hero-badge">
-        <span class="pulse-dot"></span>
-        Enterprise Decision Intelligence Platform
-      </div>
-      <h1 class="hero-headline">
-        그때의 판단 속으로,<br />
-        <em>시간을 되돌려 다시 들어갑니다.</em>
-      </h1>
-      <p class="hero-subhead">
-        결과가 나온 뒤에 과거를 비판하는 사후 확증 편향(Hindsight Bias)을 제거하세요.<br />
-        Trace는 결정 당시의 정보·논리·전제·확신도를 시간축에 안전하게 보존하고,<br />
-        과거 시점으로 <strong>Decision Replay</strong>하여 판단의 진짜 품질을 자산화합니다.
-      </p>
-      <div class="hero-ctas">
-        <a href="#quickstart" class="btn btn-primary" style="padding: 14px 28px; font-size: 1rem;">로컬에서 30초 만에 시작하기 →</a>
-        <a href="#video-demo" class="btn btn-secondary" style="padding: 14px 28px; font-size: 1rem;">▶ 3분 제품 시연 비디오 보기</a>
-      </div>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-badge">
+          Decision Intelligence Platform
+        </div>
+        <h1 class="hero-headline">
+          Remember why<br />
+          <em>you decided.</em>
+        </h1>
+        <p class="hero-subhead">
+          Trace는 결정 당시의 전제(Assumptions)와 사후 결과를 분리해 기록하고,<br />
+          시간을 되돌려 당시의 판단 품질을 오롯이 복기하는 엔터프라이즈 플랫폼입니다.
+        </p>
+        <div class="hero-ctas">
+          <a href="#demo" class="btn btn-primary" style="padding: 11px 22px; font-size: 0.92rem;">3분 시연 영상 보기 🎬</a>
+          <a href="#docs" class="btn btn-secondary" style="padding: 11px 22px; font-size: 0.92rem;">공식 백서 (PDF) ↗</a>
+          <a href="#quickstart" class="btn btn-secondary" style="padding: 11px 22px; font-size: 0.92rem;">30초 로컬 시작 →</a>
+        </div>
 
-      <!-- 3-Minute Video Showcase -->
-      <div id="video-demo" class="video-showcase-wrap">
-        <div class="showcase-bar">
-          <div class="dot dot-red"></div>
-          <div class="dot dot-yellow"></div>
-          <div class="dot dot-green"></div>
-          <div class="showcase-url">trace-demo-walkthrough.mp4 (1440x900 HD · 2m 13s)</div>
-        </div>
-        <div class="video-container">
-          <video controls preload="metadata" poster="images/08_decision_detail_graph.png">
-            <source src="trace-demo.mp4" type="video/mp4">
-            브라우저가 HTML5 비디오 태그를 지원하지 않습니다.
-          </video>
+        <!-- 3-Minute Live Interactive Demo Video -->
+        <div id="demo" class="hero-showcase" style="margin-bottom: 2rem;">
+          <div class="showcase-bar">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <div class="showcase-url">trace-demo.mp4 · 3-Minute Walkthrough (60fps HD)</div>
+          </div>
+          <div class="hero-img-wrap" style="background:#000;">
+            <video controls autoplay muted loop playsinline style="width: 100%; height: auto; display: block;">
+              <source src="trace-demo.mp4" type="video/mp4">
+              브라우저가 비디오 태그를 지원하지 않습니다.
+            </video>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Decision Matrix Section -->
-  <section id="matrix" class="matrix-section">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">The Decision Matrix</p>
-        <h2>좋은 결과가 항상 좋은 판단은 아닙니다</h2>
+    <!-- 3 Pillars Section -->
+    <section id="pillars" class="pillars-section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Core Methodology</p>
+          <h2>결과 편향을 배제하는 판단 보존 철학</h2>
+          <p class="section-desc">좋은 판단이 항상 좋은 결과를 보장하지 않으며, 나쁜 결과가 나쁜 판단을 의미하지 않습니다.</p>
+        </div>
+        <div class="cards-grid">
+          <article class="feature-card">
+            <div class="feature-icon">⏱️</div>
+            <h3>Time Travel Replay</h3>
+            <p>특정 과거 시점으로 슬라이더를 되돌려, 사후 결과를 배제한 채 당시의 지식 상태만으로 판단 품질을 복기합니다.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">🧩</div>
+            <h3>5-Step Structuring</h3>
+            <p>Decision -> Why & Assumptions -> Probabilities -> Milestones -> Lock으로 이어지는 5단계 사고 프레임워크.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">📊</div>
+            <h3>Calibration Analytics</h3>
+            <p>Brier Score와 보정 곡선을 통해 예측 확률과 실제 적중률 간의 캘리브레이션 오차를 정량 분석합니다.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">🔐</div>
+            <h3>AES-256 Envelope Encryption</h3>
+            <p>사용자별 독립 데이터 키로 암호화되며, 단일 ACID 트랜잭션 내에서 무중단 실시간 키 회전을 지원합니다.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">🛡️</div>
+            <h3>Enterprise Approvals</h3>
+            <p>중요 의사결정의 사전 검토 및 승인 대기열 거버넌스와 변조 불가한 감사 로그(Audit Log)를 제공합니다.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon">📦</div>
+            <h3>Offline Air-Gapped Monolith</h3>
+            <p>Go 단일 바이너리에 React 19 SPA를 완벽 임베딩하여 인터넷이 없는 폐쇄망 환경에서도 100% 자립 구동됩니다.</p>
+          </article>
+        </div>
       </div>
-      <div class="matrix-grid">
-        <div class="matrix-card skill">
-          <span class="matrix-badge">Skill (역량)</span>
-          <h3>좋은 판단 × 좋은 결과</h3>
-          <p>철저한 근거와 명확한 전제로 기대치를 달성한 성공 사례. 조직의 핵심 플레이북으로 내재화합니다.</p>
-        </div>
-        <div class="matrix-card badbreak">
-          <span class="matrix-badge">Bad Break (불운)</span>
-          <h3>좋은 판단 × 나쁜 결과</h3>
-          <p>당시 정보 수준에서 최선의 선택이었으나 예상치 못한 외생 변수로 실패한 사례. 담당자를 비난하지 않고 전제를 갱신합니다.</p>
-        </div>
-        <div class="matrix-card dumbluck">
-          <span class="matrix-badge">Dumb Luck (요행)</span>
-          <h3>나쁜 판단 × 좋은 결과</h3>
-          <p>근거와 전제가 빈약했으나 운 좋게 성공한 사례. 재현 불가능한 성공에 도취되는 것을 방지합니다.</p>
-        </div>
-        <div class="matrix-card mistake">
-          <span class="matrix-badge">Mistake (오판)</span>
-          <h3>나쁜 판단 × 나쁜 결과</h3>
-          <p>전제 오류와 확신 과잉으로 발생한 오판. 당시 어떤 신호를 놓쳤는지 AI와 함께 회고하여 학습합니다.</p>
-        </div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Feature Highlights -->
-  <section id="features" class="features-section">
-    <div class="container">
-      
-      <!-- Feature 1 -->
-      <div class="feature-item">
-        <div class="feature-content">
-          <p class="eyebrow" style="color: var(--accent-blue); font-weight:700; margin-bottom:0.5rem;">01 · STRUCTURED REASONING</p>
-          <h3>5단계 가이드로 완성하는<br />의사결정의 뼈대</h3>
-          <p>산발적인 회의록 대신, 판단에 꼭 필요한 5가지 핵심 요소를 단계별로 기록합니다.</p>
-          <ul class="feature-bullets">
-            <li><span class="check-icon">✓</span> <strong>Decision</strong>: 결론과 실행 지침의 명확한 정의</li>
-            <li><span class="check-icon">✓</span> <strong>Why & Assumptions</strong>: 숨은 전제와 기각된 대안(Alternatives) 보존</li>
-            <li><span class="check-icon">✓</span> <strong>Known_at Evidence</strong>: 정보의 생성일이 아닌 '내가 알게 된 시점' 기록</li>
-            <li><span class="check-icon">✓</span> <strong>Invalidation Signal</strong>: 이 판단이 틀렸음을 입증할 반증 기준 사전 선언</li>
-            <li><span class="check-icon">✓</span> <strong>Confidence Gauge</strong>: 기록 당시의 주관적 확신도(0~100%) 보존</li>
-          </ul>
+    <!-- Visual Showcase Gallery (16 Captured Screens) -->
+    <section id="gallery" class="gallery-section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Full Feature Showcase</p>
+          <h2>실제 동작 화면 갤러리 (16종)</h2>
+          <p class="section-desc">클릭하여 고화질 원본 스크린샷과 UI 인터랙션을 확인하세요.</p>
         </div>
-        <div class="feature-visual">
-          <img src="images/03_new_decision_step1.png" alt="5-Step Decision Structuring" onclick="openModal(this.src)">
-        </div>
-      </div>
 
-      <!-- Feature 2 -->
-      <div class="feature-item reverse">
-        <div class="feature-content">
-          <p class="eyebrow" style="color: var(--accent-indigo); font-weight:700; margin-bottom:0.5rem;">02 · TIME TRAVEL REPLAY</p>
-          <h3>미래 정보를 제거하고<br />당시의 눈으로 다시 봅니다</h3>
-          <p>Time Slider를 움직이면 사후에 알게 된 결과와 증거가 그래프에서 완전히 필터링됩니다. 당시 알고 있던 정보만으로 과거의 나를 마주하세요.</p>
-          <ul class="feature-bullets">
-            <li><span class="check-icon">✓</span> <strong>Mathematical Filtering</strong>: <code>known_at &gt; replay_time</code>인 미래 노드 완벽 차단</li>
-            <li><span class="check-icon">✓</span> <strong>Then vs Now</strong>: 당시의 기대치와 현재의 실제 성과 비교</li>
-            <li><span class="check-icon">✓</span> <strong>Versioned Replay</strong>: 본문·확신·전제·관계까지 두 시점의 정확한 상태 비교</li>
-            <li><span class="check-icon">✓</span> <strong>AI Historical Review</strong>: 과거 시점 컨텍스트 기반 LLM 객관성 검토</li>
-          </ul>
-        </div>
-        <div class="feature-visual">
-          <img src="images/12_decision_time_replay.png" alt="Decision Time Replay" onclick="openModal(this.src)">
+        <div class="gallery-grid">
+          <div class="gallery-card" onclick="openModal('images/01_login_page.png')">
+            <div class="gallery-thumb"><img src="images/01_login_page.png" alt="01. 로그인 화면" loading="lazy"></div>
+            <div class="gallery-info"><h4>01. 로그인 & OIDC SSO</h4><p>Keycloak OIDC 및 부트스트랩 로그인</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/02_home_dashboard.png')">
+            <div class="gallery-thumb"><img src="images/02_home_dashboard.png" alt="02. 홈 대시보드" loading="lazy"></div>
+            <div class="gallery-info"><h4>02. 시간의 흐름 대시보드</h4><p>진행 중인 의사결정과 타임라인 피드</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/03_new_decision_step1.png')">
+            <div class="gallery-thumb"><img src="images/03_new_decision_step1.png" alt="03. Step 1 Decision 선언" loading="lazy"></div>
+            <div class="gallery-info"><h4>03. Step 1 · Decision 선언</h4><p>결정 제목과 핵심 도메인 분류</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/04_new_decision_step2.png')">
+            <div class="gallery-thumb"><img src="images/04_new_decision_step2.png" alt="04. Step 2 Why & Assumptions" loading="lazy"></div>
+            <div class="gallery-info"><h4>04. Step 2 · Why & Assumptions</h4><p>논리, 숨은 전제, 기각된 대안</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/05_new_decision_step3.png')">
+            <div class="gallery-thumb"><img src="images/05_new_decision_step3.png" alt="05. Step 3 확률 추정" loading="lazy"></div>
+            <div class="gallery-info"><h4>05. Step 3 · 확률 추정</h4><p>기대 확률 및 베팅 확신도</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/06_new_decision_step4.png')">
+            <div class="gallery-thumb"><img src="images/06_new_decision_step4.png" alt="06. Step 4 재평가 마일스톤" loading="lazy"></div>
+            <div class="gallery-info"><h4>06. Step 4 · 재평가 마일스톤</h4><p>검증 시점 및 반증 기준 정의</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/07_new_decision_step5.png')">
+            <div class="gallery-thumb"><img src="images/07_new_decision_step5.png" alt="07. Step 5 요약 & 잠금" loading="lazy"></div>
+            <div class="gallery-info"><h4>07. Step 5 · 요약 & 잠금</h4><p>변조 불가 암호화 서명 저장</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/08_decision_detail_graph.png')">
+            <div class="gallery-thumb"><img src="images/08_decision_detail_graph.png" alt="08. 상세 및 지식 그래프" loading="lazy"></div>
+            <div class="gallery-info"><h4>08. 상세 및 지식 그래프</h4><p>가설 검증 및 마일스톤 상태</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/09_decision_detail_evidence_added.png')">
+            <div class="gallery-thumb"><img src="images/09_decision_detail_evidence_added.png" alt="09. 중간 증거 누적" loading="lazy"></div>
+            <div class="gallery-info"><h4>09. 중간 증거 누적</h4><p>마켓 신호 및 시스템 메트릭 추가</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/10_decision_detail_outcome_recorded.png')">
+            <div class="gallery-thumb"><img src="images/10_decision_detail_outcome_recorded.png" alt="10. 최종 결과 기록" loading="lazy"></div>
+            <div class="gallery-info"><h4>10. 최종 결과 기록</h4><p>실제 결과 및 성공/실패 여부</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/11_decision_detail_reflection.png')">
+            <div class="gallery-thumb"><img src="images/11_decision_detail_reflection.png" alt="11. 사후 배움 회고" loading="lazy"></div>
+            <div class="gallery-info"><h4>11. 사후 배움 회고</h4><p>판단 프로세스 개선점 기록</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/12_decision_time_replay.png')">
+            <div class="gallery-thumb"><img src="images/12_decision_time_replay.png" alt="12. 타임 트래블 리플레이" loading="lazy"></div>
+            <div class="gallery-info"><h4>12. 타임 트래블 리플레이</h4><p>과거 시점 지식 상태 완벽 회귀</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/13_personal_page.png')">
+            <div class="gallery-thumb"><img src="images/13_personal_page.png" alt="13. 개인화 및 키 관리" loading="lazy"></div>
+            <div class="gallery-info"><h4>13. 개인화 및 키 관리</h4><p>AES-256 데이터 키 회전 및 테마</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/14_insights_analytics.png')">
+            <div class="gallery-thumb"><img src="images/14_insights_analytics.png" alt="14. 캘리브레이션 분석" loading="lazy"></div>
+            <div class="gallery-info"><h4>14. 캘리브레이션 분석</h4><p>Brier Score 및 과신/비관 보정</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/15_approvals_reviews.png')">
+            <div class="gallery-thumb"><img src="images/15_approvals_reviews.png" alt="15. 팀 승인 검토 대기열" loading="lazy"></div>
+            <div class="gallery-info"><h4>15. 팀 승인 검토 대기열</h4><p>조직 거버넌스 승인/반려 관리</p></div>
+          </div>
+          <div class="gallery-card" onclick="openModal('images/16_admin_settings_rbac.png')">
+            <div class="gallery-thumb"><img src="images/16_admin_settings_rbac.png" alt="16. 관리자 설정 및 RBAC" loading="lazy"></div>
+            <div class="gallery-info"><h4>16. 관리자 설정 및 RBAC</h4><p>Keycloak OIDC 및 감사 로그</p></div>
+          </div>
         </div>
       </div>
+    </section>
 
-      <!-- Feature 3 -->
-      <div class="feature-item">
-        <div class="feature-content">
-          <p class="eyebrow" style="color: var(--accent-purple); font-weight:700; margin-bottom:0.5rem;">03 · DECISION INTELLIGENCE</p>
-          <h3>개인과 조직의 사고 습관을<br />데이터로 분석합니다</h3>
-          <p>시간이 흐를수록 축적되는 의사결정 데이터를 통해, 나의 확신도가 실제 결과와 얼마나 일치하는지 교정(Calibration)할 수 있습니다.</p>
-          <ul class="feature-bullets">
-            <li><span class="check-icon">✓</span> <strong>평균 확신도 및 근거 깊이(Evidence Depth)</strong> 추적</li>
-            <li><span class="check-icon">✓</span> <strong>Skill vs Luck 사분면 매트릭스</strong> 실시간 집계</li>
-            <li><span class="check-icon">✓</span> <strong>Decision Network & Semantic Memory</strong>로 과거 유사 판단 탐색</li>
-            <li><span class="check-icon">✓</span> <strong>Calibration·Bias·Pattern Profile</strong>과 개인 Review Inbox</li>
-            <li><span class="check-icon">✓</span> 관리자가 활성화한 경우에만 <strong>팀장 승인 워크플로우</strong> 제공</li>
-          </ul>
+    <!-- Enterprise Documents & Whitepapers (PDF Downloads) -->
+    <section id="docs" class="tech-section" style="background: var(--bg-dark); border-top: 1px solid var(--border-color);">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Enterprise Documentation</p>
+          <h2>공식 매뉴얼 & 아키텍처 백서 (PDF)</h2>
+          <p class="section-desc">엔터프라이즈 의사결정자와 아키텍트를 위해 엄격하게 작성된 공식 PDF 문서를 다운로드하여 확인하세요.</p>
         </div>
-        <div class="feature-visual">
-          <img src="images/14_insights_analytics.png" alt="Decision Analytics & Insights" onclick="openModal(this.src)">
-        </div>
-      </div>
 
-    </div>
-  </section>
+        <div class="tech-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+          <div class="tech-box" style="border: 1px solid rgba(99, 102, 241, 0.3); background: rgba(14, 21, 38, 0.85); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 24px; margin-bottom: 10px;">📘</div>
+              <h3 style="color: #f1f5f9; font-size: 1.1rem;">Trace Official User Guide</h3>
+              <p style="color: var(--text-dim); font-size: 0.86rem; margin: 8px 0 16px; line-height: 1.6;">결과 편향 배제 철학, 5단계 판단 구조화 프레임워크, 시점별 타임 트래블 리플레이 및 캘리브레이션 분석 가이드.</p>
+            </div>
+            <a href="Trace_User_Guide.pdf" class="btn btn-primary" style="text-align: center; font-size: 0.82rem; padding: 9px 14px;" target="_blank">PDF 다운로드 / 열람 ↗</a>
+          </div>
 
-  <!-- Live Product Gallery -->
-  <section id="gallery" class="gallery-section">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Product Tour</p>
-        <h2>Trace 서비스 전 화면 갤러리</h2>
-      </div>
-      <div class="gallery-grid">
-        <div class="gallery-card" onclick="openModal('images/01_login_page.png')">
-          <div class="gallery-thumb"><img src="images/01_login_page.png" alt="로그인 화면"></div>
-          <div class="gallery-info"><h4>01. 로그인 및 OIDC SSO</h4><p>로컬 관리자 및 Keycloak OIDC 지원</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/02_home_dashboard.png')">
-          <div class="gallery-thumb"><img src="images/02_home_dashboard.png" alt="홈 대시보드"></div>
-          <div class="gallery-info"><h4>02. 시간의 흐름 (홈 대시보드)</h4><p>진행 중인 의사결정 타임라인</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/03_new_decision_step1.png')">
-          <div class="gallery-thumb"><img src="images/03_new_decision_step1.png" alt="판단 생성 Step 1"></div>
-          <div class="gallery-info"><h4>03. Step 1: Decision</h4><p>판단 제목, 결론, 카테고리, 시점</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/04_new_decision_step2.png')">
-          <div class="gallery-thumb"><img src="images/04_new_decision_step2.png" alt="판단 생성 Step 2"></div>
-          <div class="gallery-info"><h4>04. Step 2: Why & Assumptions</h4><p>선택 이유, 숨은 전제, 대안 목록</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/05_new_decision_step3.png')">
-          <div class="gallery-thumb"><img src="images/05_new_decision_step3.png" alt="판단 생성 Step 3"></div>
-          <div class="gallery-info"><h4>05. Step 3: Evidence (Known_at)</h4><p>앎의 시점이 바인딩된 증거</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/06_new_decision_step4.png')">
-          <div class="gallery-thumb"><img src="images/06_new_decision_step4.png" alt="판단 생성 Step 4"></div>
-          <div class="gallery-info"><h4>06. Step 4: Expectation</h4><p>성공 기준 및 Invalidation 반증 신호</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/07_new_decision_step5.png')">
-          <div class="gallery-thumb"><img src="images/07_new_decision_step5.png" alt="판단 생성 Step 5"></div>
-          <div class="gallery-info"><h4>07. Step 5: Confidence</h4><p>0~100% 확신 수준 게이지</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/08_decision_detail_graph.png')">
-          <div class="gallery-thumb"><img src="images/08_decision_detail_graph.png" alt="디시전 인터랙티브 그래프"></div>
-          <div class="gallery-info"><h4>08. Interactive Flow Graph</h4><p>React Flow 기반 의사결정 시각화</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/12_decision_time_replay.png')">
-          <div class="gallery-thumb"><img src="images/12_decision_time_replay.png" alt="Time Replay"></div>
-          <div class="gallery-info"><h4>09. Decision Replay</h4><p>과거 시점 시각화 및 미래 정보 필터링</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/14_insights_analytics.png')">
-          <div class="gallery-thumb"><img src="images/14_insights_analytics.png" alt="판단 패턴 분석"></div>
-          <div class="gallery-info"><h4>10. Decision Matrix & Insights</h4><p>Skill vs Luck 매트릭스 및 통계</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/15_approvals_reviews.png')">
-          <div class="gallery-thumb"><img src="images/15_approvals_reviews.png" alt="검토함"></div>
-          <div class="gallery-info"><h4>11. Team Approvals & Reviews</h4><p>팀장 검토 및 승인 대기열</p></div>
-        </div>
-        <div class="gallery-card" onclick="openModal('images/16_admin_settings_rbac.png')">
-          <div class="gallery-thumb"><img src="images/16_admin_settings_rbac.png" alt="관리자 설정"></div>
-          <div class="gallery-info"><h4>12. Admin & Security Console</h4><p>RBAC, Encryption, OIDC, LLM 설정</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
+          <div class="tech-box" style="border: 1px solid rgba(16, 185, 129, 0.3); background: rgba(14, 21, 38, 0.85); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 24px; margin-bottom: 10px;">📗</div>
+              <h3 style="color: #f1f5f9; font-size: 1.1rem;">CRU Operations Manual</h3>
+              <p style="color: var(--text-dim); font-size: 0.86rem; margin: 8px 0 16px; line-height: 1.6;">결정 선언(Create), 증거 누적(Update), 결과 및 회고(Reflect), 팀 승인 거버넌스 워크플로우 실무 지침.</p>
+            </div>
+            <a href="Trace_CRU_Operations_Manual.pdf" class="btn btn-primary" style="text-align: center; font-size: 0.82rem; padding: 9px 14px;" target="_blank">PDF 다운로드 / 열람 ↗</a>
+          </div>
 
-  <!-- Technical Specs -->
-  <section id="specs" class="tech-section">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Enterprise Specifications</p>
-        <h2>타협 없는 보안성과 확장 아키텍처</h2>
-      </div>
-      <div class="tech-grid">
-        <div class="tech-box">
-          <h3>🔐 Envelope Encryption</h3>
-          <ul>
-            <li><strong>AES-256-GCM</strong> 사용자별 데이터 키 암호화</li>
-            <li>마스터 키/개인 키 무중단 회전 지원</li>
-            <li>개인화와 분리된 완전 격리 관리 영역</li>
-          </ul>
-        </div>
-        <div class="tech-box">
-          <h3>⚡ Single Binary Deploy</h3>
-          <ul>
-            <li><strong>Go 1.26 + Embedded React SPA</strong></li>
-            <li>외부 의존성 없는 단일 실행 바이너리</li>
-            <li>PostgreSQL 15+ 기반 신속한 마이그레이션</li>
-          </ul>
-        </div>
-        <div class="tech-box">
-          <h3>🤖 AI & MCP Endpoint</h3>
-          <ul>
-            <li><strong>/mcp</strong> Streamable HTTP MCP 엔드포인트</li>
-            <li>OpenAI 호환 Chat SSE 스트리밍</li>
-            <li>오프라인 로컬 벡터와 선택적 Embeddings</li>
-            <li>최대 256K 토큰 컨텍스트 지원</li>
-          </ul>
+          <div class="tech-box" style="border: 1px solid rgba(56, 189, 248, 0.3); background: rgba(14, 21, 38, 0.85); display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div style="font-size: 24px; margin-bottom: 10px;">📙</div>
+              <h3 style="color: #f1f5f9; font-size: 1.1rem;">Architecture & Security Whitepaper</h3>
+              <p style="color: var(--text-dim); font-size: 0.86rem; margin: 8px 0 16px; line-height: 1.6;">Go 단일 모놀리스 아키텍처, 사용자별 AES-256 봉투 암호화, 시점별 지식 격리 모델 및 불변 감사 로그 백서.</p>
+            </div>
+            <a href="Trace_Architecture_and_Security_Whitepaper.pdf" class="btn btn-primary" style="text-align: center; font-size: 0.82rem; padding: 9px 14px;" target="_blank">PDF 다운로드 / 열람 ↗</a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Quick Start Section -->
-  <section id="quickstart" class="quickstart-section">
-    <div class="container">
-      <div class="section-head">
-        <p class="eyebrow">Ready to deploy?</p>
-        <h2>30초 만에 로컬에서 실행하기</h2>
-      </div>
-      
-      <div class="code-terminal">
-        <div class="terminal-header">
-          <div style="display:flex;gap:6px;"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
-          <div class="terminal-title">bash · quickstart.sh</div>
+    <!-- Technical Architecture Specs -->
+    <section id="specs" class="tech-section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Enterprise Specifications</p>
+          <h2>검증된 엔터프라이즈 아키텍처</h2>
+          <p class="section-desc">단일 Go 바이너리로 제공되는 최고의 보안과 오프라인 배포 완결성.</p>
         </div>
-        <div class="terminal-body">
-          <span class="comment"># 1. PostgreSQL 컨테이너 실행</span><br>
-          <span class="cmd">docker run -d --name trace-db -p 5432:5432 -e POSTGRES_USER=trace -e POSTGRES_PASSWORD=password -e POSTGRES_DB=trace postgres:16-alpine</span><br><br>
-          <span class="comment"># 2. 필수 환경변수 설정 (정확히 4개)</span><br>
-          <span class="cmd">export POSTGRES_DSN='postgres://trace:password@127.0.0.1:5432/trace?sslmode=disable'</span><br>
-          <span class="cmd">export BOOTSTRAP_ADMIN='admin@example.internal'</span><br>
-          <span class="cmd">export BOOTSTRAP_ADMIN_PASSWORD='a-long-bootstrap-password'</span><br>
-          <span class="cmd">export ENCRYPTION_KEY="$(openssl rand -base64 32)"</span><br><br>
-          <span class="comment"># 3. Trace 서비스 빌드 및 실행</span><br>
-          <span class="cmd">./trace</span><br><br>
-          <span class="comment"># 4. 브라우저에서 http://localhost:8080 접속!</span>
+
+        <div class="tech-grid">
+          <div class="tech-box">
+            <h3>📦 Go Single Executable</h3>
+            <ul>
+              <li>Go 1.26+ 컴파일 단일 바이너리</li>
+              <li>React 19 SPA 내장 임베딩 (go:embed)</li>
+              <li>PostgreSQL 16+ 단일 런타임 의존성</li>
+            </ul>
+          </div>
+          <div class="tech-box">
+            <h3>🔐 Zero-Trust Security</h3>
+            <ul>
+              <li><strong>AES-256-GCM</strong> 사용자별 데이터 키 암호화</li>
+              <li>트랜잭션 기반 무중단 키 회전 지원</li>
+              <li>Keycloak OIDC PKCE SSO 연동</li>
+            </ul>
+          </div>
+          <div class="tech-box">
+            <h3>⏱️ Point-in-Time Isolation</h3>
+            <ul>
+              <li>시점별 지식 상태 완벽 격리</li>
+              <li>Brier Score 기반 캘리브레이션 분석</li>
+              <li>불변 감사 로그(Immutable Audit Log)</li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+
+    <!-- FAQ Section (AEO/GEO Optimized) -->
+    <section id="faq" class="faq-section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Frequently Asked Questions</p>
+          <h2>자주 묻는 질문 (FAQ)</h2>
+          <p class="section-desc">Trace의 핵심 기능, 타임 트래블 리플레이 및 보안에 대한 안내입니다.</p>
+        </div>
+
+        <div class="faq-list">
+          <details class="faq-item" open>
+            <summary class="faq-question">Trace는 기존 문서나 위키와 무엇이 다른가요?</summary>
+            <div class="faq-answer">
+              일반적인 위키나 문서는 사후에 수정될 수 있어, 결과가 나쁘면 과거의 판단 논리까지 왜곡되거나 잊혀집니다. Trace는 <strong>결정 당시 알고 있던 정보(전제, 기각된 대안, 기대 확률)를 불변으로 잠그고</strong>, 사후 결과와 엄격히 분리 기록하여 결과 편향 없이 당시 판단 프로세스의 본질적 품질을 복기할 수 있게 합니다.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">타임 트래블 리플레이(Time Travel Replay)는 어떻게 동작하나요?</summary>
+            <div class="faq-answer">
+              의사결정 상세 화면에서 타임라인 슬라이더를 과거 특정 날짜로 이동하면, <strong>그 이후에 발생한 실제 결과나 회고 내용이 완벽하게 마스킹</strong>됩니다. 평가자는 당시 결정자가 보았던 정보만을 바탕으로 시뮬레이션할 수 있어 사후 확신 편향 없는 공정한 피드백이 가능합니다.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">조직의 민감한 의사결정 데이터는 어떻게 암호화되나요?</summary>
+            <div class="faq-answer">
+              Trace는 <strong>2계층 봉투 암호화(AES-256-GCM Envelope Encryption)</strong>를 적용합니다. 각 사용자마다 독립적인 데이터 키(DEK)로 암호화되며, 단일 PostgreSQL ACID 트랜잭션 내에서 서비스 중단 없이 실시간으로 키를 재암호화하는 <strong>무중단 키 회전(Zero-Downtime Key Rotation)</strong>을 지원합니다.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">폐쇄망(Air-Gapped) 환경에서도 배포 및 구동이 가능한가요?</summary>
+            <div class="faq-answer">
+              네, 100% 완전 오프라인 구동을 보장합니다. Go 단일 실행 파일 내에 React 19 정적 에셋이 임베딩되어 있어 외부 네트워크 통신이 전혀 필요 없습니다. PostgreSQL 16+ 컨테이너와 4개의 필수 환경변수만 설정하면 즉시 완벽하게 동작합니다.
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">조직 모드에서 승인(Approvals) 거버넌스는 어떻게 운영되나요?</summary>
+            <div class="faq-answer">
+              관리자가 승인 정책을 활성화하면, 팀원이 등록한 중요 의사결정은 즉시 [검토 및 승인] 대기열로 이동합니다. 팀장은 결정 논리와 위험 분류를 검토한 후 단 한 번의 클릭으로 승인하거나 피드백과 함께 반려할 수 있습니다.
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Start Section -->
+    <section id="quickstart" class="quickstart-section">
+      <div class="container">
+        <div class="section-head">
+          <p class="eyebrow">Ready to decide?</p>
+          <h2>30초 만에 로컬에서 실행하기</h2>
+          <p class="section-desc">단 4개의 환경변수로 안전한 Decision Intelligence 플랫폼을 기동하세요.</p>
+        </div>
+        
+        <div class="code-terminal">
+          <div class="terminal-header">
+            <div style="display:flex;gap:6px;"><div class="dot dot-red"></div><div class="dot dot-yellow"></div><div class="dot dot-green"></div></div>
+            <div class="terminal-title">bash · quickstart.sh</div>
+          </div>
+          <div class="terminal-body">
+            <span class="comment"># 1. PostgreSQL 컨테이너 실행</span><br>
+            <span class="cmd">docker run -d --name trace-db -p 5432:5432 -e POSTGRES_USER=trace -e POSTGRES_PASSWORD=trace -e POSTGRES_DB=trace postgres:16-alpine</span><br><br>
+            <span class="comment"># 2. 필수 환경변수 설정 (정확히 4개)</span><br>
+            <span class="cmd">export DATABASE_URL='postgresql://trace:trace@127.0.0.1:5432/trace?sslmode=disable'</span><br>
+            <span class="cmd">export BOOTSTRAP_ADMIN='admin@example.internal'</span><br>
+            <span class="cmd">export BOOTSTRAP_ADMIN_PASSWORD='a-long-bootstrap-password'</span><br>
+            <span class="cmd">export ENCRYPTION_KEY="$(openssl rand -base64 32)"</span><br><br>
+            <span class="comment"># 3. Trace 서비스 빌드 및 실행</span><br>
+            <span class="cmd">./trace</span><br><br>
+            <span class="comment"># 4. 브라우저에서 http://localhost:8080 접속!</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <!-- Modal Viewer -->
   <div id="imageModal" class="modal-backdrop" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
-      <button class="modal-close" onclick="closeModal()">×</button>
+      <button class="modal-close" onclick="closeModal()" aria-label="닫기">×</button>
       <img id="modalImg" src="" alt="확대 이미지">
     </div>
   </div>
@@ -883,12 +1067,10 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-links">
-        <a href="guide.md">사용자 가이드</a>
-        <a href="cru-manual.md">CRU 매뉴얼</a>
-        <a href="architecture.md">아키텍처</a>
-        <a href="security.md">보안 명세</a>
-        <a href="api.md">REST & MCP API</a>
-        <a href="https://github.com/hkjang/trace">GitHub</a>
+        <a href="Trace_User_Guide.pdf" target="_blank">사용자 가이드 (PDF)</a>
+        <a href="Trace_CRU_Operations_Manual.pdf" target="_blank">CRU 매뉴얼 (PDF)</a>
+        <a href="Trace_Architecture_and_Security_Whitepaper.pdf" target="_blank">아키텍처 백서 (PDF)</a>
+        <a href="https://github.com/hkjang/trace" target="_blank">GitHub</a>
       </div>
       <p>Copyright © 2026 Trace Contributors. Remember why you decided.</p>
     </div>

@@ -13,11 +13,9 @@
   <p align="center">
     <a href="docs/index.html"><strong>🌐 웹 홍보 및 소개 페이지</strong></a> •
     <a href="docs/trace-demo.mp4"><strong>🎬 3분 제품 시연 비디오 (MP4)</strong></a> •
-    <a href="docs/guide.md"><strong>📖 사용자 가이드</strong></a> •
-    <a href="docs/cru-manual.md"><strong>⚙️ CRU 매뉴얼</strong></a> •
-    <a href="docs/architecture.md"><strong>🏛️ 아키텍처</strong></a> •
-    <a href="docs/security.md"><strong>🔐 보안 & 암호화</strong></a> •
-    <a href="docs/api.md"><strong>🔌 REST & MCP API</strong></a>
+    <a href="docs/Trace_User_Guide.pdf"><strong>📘 공식 사용자 가이드 (PDF)</strong></a> •
+    <a href="docs/Trace_CRU_Operations_Manual.pdf"><strong>📗 CRU 매뉴얼 (PDF)</strong></a> •
+    <a href="docs/Trace_Architecture_and_Security_Whitepaper.pdf"><strong>📙 아키텍처 백서 (PDF)</strong></a>
   </p>
 </div>
 
