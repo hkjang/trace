@@ -1,4 +1,4 @@
-# Trace
+# <img src="frontend/public/logo.svg" width="36" height="36" align="center" style="vertical-align: middle; margin-right: 8px;" /> Trace
 
 <div align="center">
   <a href="docs/index.html#video-demo">

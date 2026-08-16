@@ -25,7 +25,7 @@ export default function LoginPage() {
   }
   return <main className="login-page">
     <section className="login-story" aria-hidden="true">
-      <div className="login-brand"><span className="trace-mark large-mark">T</span><span>TRACE</span></div>
+      <div className="login-brand"><img src="/logo.svg" alt="Trace" className="brand-logo-img large" /><span>TRACE</span></div>
       <div className="time-art">
         <span className="time-label past">PAST</span><span className="time-label now">NOW</span><span className="time-label future">FUTURE</span>
         <span className="time-line solid" /><span className="time-line dotted" /><span className="time-node evidence">E</span><span className="time-node decision">D</span><span className="time-node outcome">O</span>

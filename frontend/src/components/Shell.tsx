@@ -16,10 +16,10 @@ export function Shell({ children }: { children: ReactNode }) {
   const location = useLocation()
   const admin = user?.permissions.includes('admin.access')
   return <div className="app-shell">
-    <header className="mobile-header"><button className="icon-button" aria-label="메뉴 열기" onClick={() => setMobileOpen(true)}><Menu /></button><Link to="/" className="brand"><span className="trace-mark">T</span><span>TRACE</span></Link><Link to="/decisions/new" className="icon-button accent" aria-label="새 결정"><Plus /></Link></header>
+    <header className="mobile-header"><button className="icon-button" aria-label="메뉴 열기" onClick={() => setMobileOpen(true)}><Menu /></button><Link to="/" className="brand"><img src="/logo.svg" alt="Trace" className="brand-logo-img" /><span>TRACE</span></Link><Link to="/decisions/new" className="icon-button accent" aria-label="새 결정"><Plus /></Link></header>
     {mobileOpen && <button className="nav-scrim" aria-label="메뉴 닫기" onClick={() => setMobileOpen(false)} />}
     <aside className={`sidebar ${mobileOpen ? 'open' : ''}`}>
-      <div className="sidebar-top"><Link to="/" className="brand" onClick={() => setMobileOpen(false)}><span className="trace-mark">T</span><span>TRACE</span></Link><button className="icon-button close-nav" onClick={() => setMobileOpen(false)}><X /></button></div>
+      <div className="sidebar-top"><Link to="/" className="brand" onClick={() => setMobileOpen(false)}><img src="/logo.svg" alt="Trace" className="brand-logo-img" /><span>TRACE</span></Link><button className="icon-button close-nav" onClick={() => setMobileOpen(false)}><X /></button></div>
       <Link to="/decisions/new" className="button primary new-decision" onClick={() => setMobileOpen(false)}><Plus size={18} />새로운 판단 남기기</Link>
       <nav className="main-nav" aria-label="주 메뉴">{nav.map(item => <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setMobileOpen(false)} className={({ isActive }) => isActive ? 'active' : ''}><item.icon size={19} /><span>{item.label}</span>{item.to === '/reviews' && <span className="nav-dot" />}</NavLink>)}</nav>
       <div className="sidebar-time"><Clock3 size={16} /><div><span>NOW</span><strong>{new Intl.DateTimeFormat('ko-KR', { month: 'short', day: 'numeric' }).format(new Date())}</strong></div></div>

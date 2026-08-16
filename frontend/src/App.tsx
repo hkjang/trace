@@ -18,7 +18,7 @@ function Deferred({ children }: { children: ReactNode }) { return <Suspense fall
 function Protected() {
   const { user, loading } = useAuth()
   const location = useLocation()
-  if (loading) return <div className="boot-screen"><span className="trace-mark">T</span><span>시간의 층을 불러오는 중…</span></div>
+  if (loading) return <div className="boot-screen"><img src="/logo.svg" alt="Trace" className="brand-logo-img" /><span>시간의 층을 불러오는 중…</span></div>
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />
   return <Shell><Outlet /></Shell>
 }
