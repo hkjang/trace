@@ -7,11 +7,11 @@ GitHub Release에는 Trace 서비스 Docker 이미지 하나를 담은 `trace-v�
 ## 2. 폐쇄망으로 반입하고 이미지 적재
 
 ```bash
-gzip -dc trace-v0.1.0.tar.gz | docker image load
-docker image inspect trace:v0.1.0
+gzip -dc trace-v0.1.1.tar.gz | docker image load
+docker image inspect trace:v0.1.1
 ```
 
-이미지 이름은 `trace:v0.1.0`, 파일 이름은 `trace-v0.1.0.tar.gz`입니다.
+이미지 이름은 `trace:v0.1.1`, 파일 이름은 `trace-v0.1.1.tar.gz`입니다.
 
 ## 3. 네 개의 환경변수 준비
 

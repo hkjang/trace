@@ -1,7 +1,8 @@
 .git
 .github
 dist
-trace
+/trace
+docs/images
 frontend/node_modules
 frontend/dist
 internal/web/dist

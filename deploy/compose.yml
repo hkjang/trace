@@ -1,6 +1,6 @@
 services:
   trace:
-    image: trace:v0.1.0
+    image: trace:v0.1.1
     container_name: trace
     restart: unless-stopped
     ports:

@@ -1,5 +1,5 @@
 .env
-trace
+/trace
 dist/*
 !dist/.gitkeep
 frontend/node_modules/
