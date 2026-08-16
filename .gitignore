@@ -1,0 +1,12 @@
+.env
+trace
+dist/*
+!dist/.gitkeep
+frontend/node_modules/
+frontend/dist/
+frontend/*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+internal/web/dist/assets/
+*.log
+.DS_Store

@@ -1,0 +1,172 @@
+openapi: 3.1.0
+info:
+  title: Trace API
+  version: 0.1.0
+  description: Decision memory, replay, administration, key, and AI streaming API.
+servers:
+  - url: /
+security:
+  - sessionCookie: []
+  - bearerToken: []
+paths:
+  /healthz:
+    get:
+      security: []
+      operationId: health
+      responses:
+        "200": { description: Healthy }
+  /api/v1/version:
+    get:
+      security: []
+      operationId: version
+      responses:
+        "200": { description: Build metadata, content: { application/json: { schema: { $ref: "#/components/schemas/Version" } } } }
+  /api/v1/auth/login:
+    post:
+      security: []
+      operationId: localLogin
+      requestBody: { required: true, content: { application/json: { schema: { type: object, required: [identity, password], properties: { identity: { type: string }, password: { type: string, format: password } } } } } }
+      responses:
+        "200": { description: Authenticated }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+  /api/v1/me:
+    get:
+      operationId: me
+      responses:
+        "200": { description: Current user and version }
+  /api/v1/dashboard:
+    get:
+      operationId: dashboard
+      responses:
+        "200": { description: Decision status and recent focus list }
+  /api/v1/analytics/calibration:
+    get:
+      operationId: calibration
+      responses:
+        "200": { description: Confidence calibration and decision matrix }
+  /api/v1/decisions:
+    get:
+      operationId: listDecisions
+      parameters:
+        - { name: status, in: query, schema: { type: string } }
+        - { name: q, in: query, schema: { type: string } }
+        - { name: limit, in: query, schema: { type: integer, maximum: 100 } }
+      responses:
+        "200": { description: Visible decisions }
+    post:
+      operationId: createDecision
+      requestBody: { required: true, content: { application/json: { schema: { $ref: "#/components/schemas/DecisionInput" } } } }
+      responses:
+        "201": { description: Created, content: { application/json: { schema: { $ref: "#/components/schemas/Decision" } } } }
+  /api/v1/decisions/{id}:
+    parameters:
+      - { $ref: "#/components/parameters/DecisionId" }
+    get:
+      operationId: getDecision
+      responses:
+        "200": { description: Decision context, content: { application/json: { schema: { $ref: "#/components/schemas/Decision" } } } }
+    patch:
+      operationId: updateDecision
+      responses:
+        "200": { description: Updated }
+        "409": { description: Optimistic version conflict }
+  /api/v1/decisions/{id}/replay:
+    get:
+      operationId: replayDecision
+      parameters:
+        - { $ref: "#/components/parameters/DecisionId" }
+        - { name: at, in: query, required: true, schema: { type: string, format: date-time } }
+      responses:
+        "200": { description: Point-in-time filtered decision }
+  /api/v1/decisions/{id}/evidence:
+    post:
+      operationId: addEvidence
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Evidence added } }
+  /api/v1/decisions/{id}/outcomes:
+    post:
+      operationId: addOutcome
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Outcome recorded } }
+  /api/v1/decisions/{id}/reflections:
+    post:
+      operationId: addReflection
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Reflection recorded } }
+  /api/v1/decisions/{id}/ai/stream:
+    post:
+      operationId: streamAIAnalysis
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses:
+        "200": { description: SSE meta/delta/done events, content: { text/event-stream: {} } }
+  /api/v1/decisions/{id}/approval:
+    post:
+      operationId: submitApproval
+      parameters: [ { $ref: "#/components/parameters/DecisionId" } ]
+      responses: { "201": { description: Submitted when workflow is enabled } }
+  /api/v1/personal/keys:
+    get: { operationId: listPersonalKeys, responses: { "200": { description: Key metadata only } } }
+    post: { operationId: createPersonalKey, responses: { "201": { description: Encrypted key created } } }
+  /api/v1/personal/data-key/rotate:
+    post: { operationId: rotatePersonalDataKey, responses: { "204": { description: All personal secrets re-encrypted } } }
+  /api/v1/personal/tokens:
+    get: { operationId: listTokens, responses: { "200": { description: Token metadata } } }
+    post: { operationId: createToken, responses: { "201": { description: Token plaintext returned once } } }
+  /api/v1/admin/settings:
+    get: { operationId: adminSettings, responses: { "200": { description: Redacted service settings } } }
+  /api/v1/admin/settings/oidc:
+    put: { operationId: saveOIDC, responses: { "200": { description: OIDC settings encrypted and saved } } }
+  /api/v1/admin/settings/ai:
+    put: { operationId: saveAI, responses: { "200": { description: AI settings encrypted and saved } } }
+  /api/v1/admin/settings/workflow:
+    put: { operationId: saveWorkflow, responses: { "200": { description: Workflow policy saved } } }
+  /api/v1/admin/users:
+    get: { operationId: listUsers, responses: { "200": { description: Users } } }
+    post: { operationId: createUser, responses: { "201": { description: User created } } }
+  /api/v1/admin/roles:
+    get: { operationId: listRoles, responses: { "200": { description: Roles and permissions } } }
+  /api/v1/admin/teams:
+    get: { operationId: listTeams, responses: { "200": { description: Teams } } }
+    post: { operationId: createTeam, responses: { "201": { description: Team with manager created } } }
+components:
+  securitySchemes:
+    sessionCookie: { type: apiKey, in: cookie, name: trace_session }
+    bearerToken: { type: http, scheme: bearer }
+  parameters:
+    DecisionId: { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+  responses:
+    Unauthorized: { description: Authentication required }
+  schemas:
+    Version:
+      type: object
+      required: [service, version, commit, buildTime]
+      properties:
+        service: { type: string, const: trace }
+        version: { type: string }
+        commit: { type: string }
+        buildTime: { type: string }
+    DecisionInput:
+      type: object
+      required: [title, decision, confidence, decidedAt]
+      properties:
+        title: { type: string }
+        category: { type: string }
+        decision: { type: string }
+        reason: { type: string }
+        assumptions: { type: string }
+        invalidationConditions: { type: string }
+        confidence: { type: integer, minimum: 0, maximum: 100 }
+        decidedAt: { type: string, format: date-time }
+        reviewAt: { type: [string, "null"], format: date-time }
+        teamId: { type: [string, "null"], format: uuid }
+    Decision:
+      allOf:
+        - { $ref: "#/components/schemas/DecisionInput" }
+        - type: object
+          required: [id, ownerId, status, workflowState, version]
+          properties:
+            id: { type: string, format: uuid }
+            ownerId: { type: string, format: uuid }
+            status: { type: string }
+            workflowState: { type: string }
+            version: { type: integer }

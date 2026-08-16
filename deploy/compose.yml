@@ -1,0 +1,19 @@
+services:
+  trace:
+    image: trace:v0.1.0
+    container_name: trace
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      POSTGRES_DSN: "${POSTGRES_DSN}"
+      BOOTSTRAP_ADMIN: "${BOOTSTRAP_ADMIN}"
+      BOOTSTRAP_ADMIN_PASSWORD: "${BOOTSTRAP_ADMIN_PASSWORD}"
+      ENCRYPTION_KEY: "${ENCRYPTION_KEY}"
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL

@@ -1,0 +1,9 @@
+.git
+.github
+dist
+trace
+frontend/node_modules
+frontend/dist
+internal/web/dist
+**/*_test.go
+*.tar.gz
