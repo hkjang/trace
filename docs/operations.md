@@ -55,6 +55,8 @@ Compose 예제는 read-only root filesystem, 모든 Linux capability 제거, no-
 
 Trace는 OIDC Discovery, authorization code flow, PKCE S256, state/nonce 검증을 자동 적용합니다. 기본 claim은 `preferred_username`, `email`, `name`이며 관리 화면에서 바꿀 수 있습니다.
 
+Keycloak에 이미 로그인한 사용자를 로그인 화면 없이 바로 들여보내려면 고급 설정의 **자동 로그인 (Silent SSO)** 을 켭니다. 기본값은 꺼짐이며 동작과 루프 방지 장치는 [관리자 가이드](ADMIN_GUIDE.md#자동-로그인-auto_login-silent-sso)에 있습니다.
+
 ## 6. AI 연결
 
 관리자 → AI 연동에서 내부 AI gateway 또는 외부 OpenAI endpoint를 설정합니다. 폐쇄망에서는 `Base URL`을 망 내부 OpenAI 호환 endpoint로 지정합니다. API key는 데이터베이스에 AES-256-GCM으로 암호화되며 환경변수로 받지 않습니다.

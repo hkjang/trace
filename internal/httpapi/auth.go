@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/hkjang/trace/internal/domain"
 	"github.com/hkjang/trace/internal/store"
 	"github.com/hkjang/trace/internal/version"
 	"golang.org/x/oauth2"
@@ -26,7 +27,9 @@ func (s *Server) handlePublicConfig(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	workflow, _ := s.Store.GetWorkflowSettings(r.Context())
-	writeJSON(w, http.StatusOK, map[string]any{"branding": branding, "oidc": map[string]any{"enabled": oidcSettings.Enabled, "loginUrl": "/api/v1/auth/oidc/start"}, "workflow": workflow, "version": version.Current()})
+	// autoLogin is published so the browser knows whether to try a silent
+	// sign-in before showing the login screen.
+	writeJSON(w, http.StatusOK, map[string]any{"branding": branding, "oidc": map[string]any{"enabled": oidcSettings.Enabled, "autoLogin": oidcSettings.Enabled && oidcSettings.AutoLogin, "loginUrl": "/api/v1/auth/oidc/start"}, "workflow": workflow, "version": version.Current()})
 }
 
 func (s *Server) handleLocalLogin(w http.ResponseWriter, r *http.Request) {
@@ -83,30 +86,76 @@ func (s *Server) handleOIDCStart(w http.ResponseWriter, r *http.Request) {
 	state, _ := randomURLToken(32)
 	nonce, _ := randomURLToken(24)
 	verifier, _ := randomURLToken(32)
-	returnTo := r.URL.Query().Get("returnTo")
-	if !strings.HasPrefix(returnTo, "/") || strings.HasPrefix(returnTo, "//") {
-		returnTo = "/"
-	}
-	if err := s.Store.CreateOAuthState(r.Context(), state, nonce, verifier, returnTo); err != nil {
+	pending := store.OAuthState{Nonce: nonce, Verifier: verifier, ReturnTo: safeReturnTo(r.URL.Query().Get("returnTo")), Silent: silentOIDCAttempt(r.URL.Query().Get("prompt"), settings)}
+	if err := s.Store.CreateOAuthState(r.Context(), state, pending); err != nil {
 		writeError(w, err)
 		return
 	}
 	sum := sha256.Sum256([]byte(verifier))
 	challenge := base64.RawURLEncoding.EncodeToString(sum[:])
-	target := oauthConfig.AuthCodeURL(state, oidc.Nonce(nonce), oauth2.SetAuthURLParam("code_challenge", challenge), oauth2.SetAuthURLParam("code_challenge_method", "S256"))
-	http.Redirect(w, r, target, http.StatusFound)
+	options := []oauth2.AuthCodeOption{oidc.Nonce(nonce), oauth2.SetAuthURLParam("code_challenge", challenge), oauth2.SetAuthURLParam("code_challenge_method", "S256")}
+	if pending.Silent {
+		// prompt=none asks the provider to answer from an existing session only.
+		// It never renders UI: either a code comes straight back, or an error
+		// such as login_required does.
+		options = append(options, oauth2.SetAuthURLParam("prompt", "none"))
+	}
+	http.Redirect(w, r, oauthConfig.AuthCodeURL(state, options...), http.StatusFound)
+}
+
+// silentOIDCAttempt decides whether this start request becomes a prompt=none
+// attempt. Refusing an unrequested silent attempt keeps the redirect surface
+// tied to the administrator setting: anyone can append ?prompt=none to a URL,
+// but only auto_login turns it on.
+func silentOIDCAttempt(prompt string, settings domain.OIDCSettings) bool {
+	return prompt == "none" && settings.Enabled && settings.AutoLogin
+}
+
+// safeReturnTo only accepts a same-origin path, so the login flow cannot be
+// used as an open redirect. Anything else lands on the home page.
+func safeReturnTo(value string) string {
+	if !strings.HasPrefix(value, "/") || strings.HasPrefix(value, "//") || strings.HasPrefix(value, "/\\") || strings.ContainsAny(value, "\r\n") {
+		return "/"
+	}
+	parsed, err := url.Parse(value)
+	if err != nil || parsed.IsAbs() || parsed.Host != "" {
+		return "/"
+	}
+	return value
+}
+
+// providerErrorRedirect maps an error the provider sent to the callback onto
+// the login page. prompt=none produces login_required whenever no session
+// exists, which is an ordinary outcome: the browser is sent to /login?sso=none
+// so it has a marker telling it not to retry, which is what stops a
+// signed-out visitor from being bounced in a loop.
+func providerErrorRedirect(oidcErr string, silent bool) string {
+	if silent {
+		return "/login?sso=none"
+	}
+	return "/login?error=" + url.QueryEscape(oidcErr)
 }
 
 func (s *Server) handleOIDCCallback(w http.ResponseWriter, r *http.Request) {
 	if oidcErr := r.URL.Query().Get("error"); oidcErr != "" {
-		http.Redirect(w, r, "/login?error="+url.QueryEscape(oidcErr), http.StatusFound)
+		silent := false
+		if state := r.URL.Query().Get("state"); state != "" {
+			if pending, err := s.Store.ConsumeOAuthState(r.Context(), state); err == nil {
+				silent = pending.Silent
+			}
+		}
+		if !silent {
+			s.Logger.Warn("OIDC provider returned an error", "error", oidcErr)
+		}
+		http.Redirect(w, r, providerErrorRedirect(oidcErr, silent), http.StatusFound)
 		return
 	}
-	nonce, verifier, returnTo, err := s.Store.ConsumeOAuthState(r.Context(), r.URL.Query().Get("state"))
+	pending, err := s.Store.ConsumeOAuthState(r.Context(), r.URL.Query().Get("state"))
 	if err != nil {
 		http.Redirect(w, r, "/login?error=invalid_state", http.StatusFound)
 		return
 	}
+	nonce, verifier, returnTo := pending.Nonce, pending.Verifier, safeReturnTo(pending.ReturnTo)
 	settings, err := s.Store.GetOIDCSettings(r.Context(), true)
 	if err != nil {
 		writeError(w, err)
