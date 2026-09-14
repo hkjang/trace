@@ -6,7 +6,7 @@ BUILD_TIME := $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 
 test:
 	go test ./...
-	cd frontend && npm run lint
+	cd frontend && npm run lint && npm test
 
 web:
 	cd frontend && npm ci && npm run build

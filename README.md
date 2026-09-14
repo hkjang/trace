@@ -101,6 +101,7 @@ export ENCRYPTION_KEY="$(openssl rand -base64 32)"
 - [🔌 REST API 및 MCP 엔드포인트 명세 (`docs/api.md`)](docs/api.md)
 - [📋 OpenAPI 3.1 명세 (`api/openapi.yaml`)](api/openapi.yaml)
 - [🚢 오프라인 배포 및 운영 가이드 (`docs/operations.md`)](docs/operations.md)
+- [🛠️ 관리자 가이드 · SSO 자동 로그인 (`docs/ADMIN_GUIDE.md`)](docs/ADMIN_GUIDE.md)
 
 ---
 

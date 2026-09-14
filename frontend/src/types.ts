@@ -1,6 +1,6 @@
 export type VersionInfo = { service: string; version: string; commit: string; buildTime: string }
 export type User = { id: string; email: string; username: string; displayName: string; status: string; locale: string; timezone: string; roles: string[]; permissions: string[]; createdAt: string }
-export type PublicConfig = { branding: { serviceName: string; tagline: string }; oidc: { enabled: boolean; loginUrl: string }; workflow: WorkflowSettings; version: VersionInfo }
+export type PublicConfig = { branding: { serviceName: string; tagline: string }; oidc: { enabled: boolean; autoLogin: boolean; loginUrl: string }; workflow: WorkflowSettings; version: VersionInfo }
 export type Alternative = { id: string; title: string; description: string }
 export type Evidence = { id: string; title: string; type: string; source: string; content: string; snapshot?: string; summary: string; reliability?: number; stance: 'support' | 'neutral' | 'against'; publishedAt?: string; knownAt: string; capturedAt: string }
 export type Expectation = { id: string; expectation: string; successCriteria: string; expectedAt?: string; probability?: number }
@@ -18,7 +18,7 @@ export type Decision = { id: string; ownerId: string; ownerName?: string; teamId
 export type ReviewItem = { decisionId: string; title: string; category: string; confidence: number; priority: number; health: string; reasons: string[]; reviewAt?: string; lastReviewed?: string; updatedAt: string }
 export type Dashboard = { activeCount: number; waitingCount: number; reviewDue: number; closedCount: number; recent: Decision[]; reviewInbox?: ReviewItem[] }
 export type WorkflowSettings = { approvalRequired: boolean; requireTeamManager: boolean }
-export type OIDCSettings = { enabled: boolean; issuerUrl: string; clientId: string; clientSecret: string; scopes: string; usernameClaim: string; emailClaim: string; displayClaim: string; autoProvision: boolean; baseUrl: string }
+export type OIDCSettings = { enabled: boolean; issuerUrl: string; clientId: string; clientSecret: string; scopes: string; usernameClaim: string; emailClaim: string; displayClaim: string; autoProvision: boolean; autoLogin: boolean; baseUrl: string }
 export type AISettings = { enabled: boolean; providerName: string; baseUrl: string; protocol: 'responses' | 'chat_completions'; apiKey: string; model: string; embeddingModel: string; maxOutputTokens: number; contextWindow: number; requestTimeoutSec: number; systemPrompt: string }
 export type AdminSettings = { oidc: OIDCSettings; ai: AISettings; workflow: WorkflowSettings; branding: { serviceName: string; tagline: string }; limits: { maxTokens: number } }
 export type PersonalKey = { id: string; name: string; kind: string; permissions: string[]; status: string; expiresAt?: string; lastRotatedAt: string; createdAt: string }

@@ -11,23 +11,32 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (s *Store) CreateOAuthState(ctx context.Context, state, nonce, verifier, returnTo string) error {
-	_, err := s.DB.Exec(ctx, `INSERT INTO oauth_states(state_hash,nonce,code_verifier,return_to,expires_at) VALUES($1,$2,$3,$4,$5)`, tokenHash(state), nonce, verifier, returnTo, time.Now().UTC().Add(10*time.Minute))
+// OAuthState is one pending authorization request. Silent marks a prompt=none
+// attempt so the callback can treat login_required as an ordinary answer.
+type OAuthState struct {
+	Nonce    string
+	Verifier string
+	ReturnTo string
+	Silent   bool
+}
+
+func (s *Store) CreateOAuthState(ctx context.Context, state string, pending OAuthState) error {
+	_, err := s.DB.Exec(ctx, `INSERT INTO oauth_states(state_hash,nonce,code_verifier,return_to,silent,expires_at) VALUES($1,$2,$3,$4,$5,$6)`, tokenHash(state), pending.Nonce, pending.Verifier, pending.ReturnTo, pending.Silent, time.Now().UTC().Add(10*time.Minute))
 	return err
 }
 
-func (s *Store) ConsumeOAuthState(ctx context.Context, state string) (nonce, verifier, returnTo string, err error) {
+func (s *Store) ConsumeOAuthState(ctx context.Context, state string) (OAuthState, error) {
+	var pending OAuthState
 	tx, err := s.DB.Begin(ctx)
 	if err != nil {
-		return "", "", "", err
+		return pending, err
 	}
 	defer func() { _ = tx.Rollback(ctx) }()
-	err = tx.QueryRow(ctx, `DELETE FROM oauth_states WHERE state_hash=$1 AND expires_at>now() RETURNING nonce,code_verifier,return_to`, tokenHash(state)).Scan(&nonce, &verifier, &returnTo)
+	err = tx.QueryRow(ctx, `DELETE FROM oauth_states WHERE state_hash=$1 AND expires_at>now() RETURNING nonce,code_verifier,return_to,silent`, tokenHash(state)).Scan(&pending.Nonce, &pending.Verifier, &pending.ReturnTo, &pending.Silent)
 	if err != nil {
-		return "", "", "", ErrUnauthorized
+		return OAuthState{}, ErrUnauthorized
 	}
-	err = tx.Commit(ctx)
-	return
+	return pending, tx.Commit(ctx)
 }
 
 func (s *Store) ResolveOIDCUser(ctx context.Context, issuer, subject, email, username, displayName string, claims map[string]any, autoProvision bool) (domain.User, error) {

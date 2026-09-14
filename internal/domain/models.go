@@ -48,7 +48,10 @@ type OIDCSettings struct {
 	EmailClaim    string `json:"emailClaim"`
 	DisplayClaim  string `json:"displayClaim"`
 	AutoProvision bool   `json:"autoProvision"`
-	BaseURL       string `json:"baseUrl"`
+	// AutoLogin lets the browser try a prompt=none sign-in when the provider
+	// session is still alive, so a visitor never sees the login screen.
+	AutoLogin bool   `json:"autoLogin"`
+	BaseURL   string `json:"baseUrl"`
 }
 
 type AISettings struct {
